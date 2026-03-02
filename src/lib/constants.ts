@@ -1,8 +1,13 @@
-import { Home, Users, DollarSign, Settings } from 'lucide-react'
+import { DollarSign, Settings } from 'lucide-react'
+import { DASHBOARDS } from '@/config/dashboards'
 
 export const NAV_LINKS = [
-  { name: 'Dashboard', path: '/', icon: Home },
-  { name: 'Leads', path: '/leads', icon: Users },
+  {
+    name: DASHBOARDS.onboarding.title,
+    path: DASHBOARDS.onboarding.path,
+    icon: DASHBOARDS.onboarding.icon,
+  },
+  { name: DASHBOARDS.leads.title, path: DASHBOARDS.leads.path, icon: DASHBOARDS.leads.icon },
   { name: 'Faturamento', path: '/faturamento', icon: DollarSign },
   { name: 'Configurações', path: '/settings', icon: Settings },
 ]
