@@ -6,11 +6,11 @@ export const ProtectedRoute = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-secondary/30">
-        <div className="animate-pulse flex flex-col items-center gap-4">
-          <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
-          <span className="text-muted-foreground text-body">Carregando...</span>
-        </div>
+      <div className="min-h-screen flex flex-col items-center justify-center bg-secondary/30">
+        <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4 shadow-sm"></div>
+        <span className="text-muted-foreground text-body font-medium animate-pulse">
+          Carregando...
+        </span>
       </div>
     )
   }
