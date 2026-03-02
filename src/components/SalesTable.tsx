@@ -1,5 +1,3 @@
-import { useEffect, useState } from 'react'
-import { supabase } from '@/lib/supabase/client'
 import {
   Table,
   TableBody,
@@ -11,64 +9,67 @@ import {
 import { format, parseISO } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { Skeleton } from '@/components/ui/skeleton'
+import { ShoppingBag } from 'lucide-react'
+import { Sale } from '@/types/goals'
 
-export function SalesTable() {
-  const [sales, setSales] = useState<any[]>([])
-  const [loading, setLoading] = useState(true)
+interface SalesTableProps {
+  sales: Sale[]
+  isLoading: boolean
+}
 
-  useEffect(() => {
-    const fetchSales = async () => {
-      const { data } = await supabase
-        .from('sales')
-        .select('*')
-        .order('sale_date', { ascending: false })
-        .limit(15)
+export function SalesTable({ sales, isLoading }: SalesTableProps) {
+  if (isLoading) {
+    return <Skeleton className="w-full h-96 rounded-2xl glass-panel" />
+  }
 
-      setSales(data || [])
-      setLoading(false)
-    }
-    fetchSales()
-  }, [])
-
-  if (loading) return <Skeleton className="w-full h-96 rounded-2xl" />
+  if (sales.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center p-12 glass-panel rounded-2xl text-center">
+        <ShoppingBag className="w-12 h-12 text-muted-foreground mb-4 opacity-50" />
+        <h3 className="text-headline mb-2">Nenhuma venda registrada</h3>
+        <p className="text-body text-muted-foreground max-w-sm">
+          Ainda não há dados financeiros. Comece adicionando uma nova venda para acompanhar seu
+          progresso.
+        </p>
+      </div>
+    )
+  }
 
   return (
-    <div className="bg-card rounded-2xl shadow-elevation overflow-hidden border border-black/5 dark:border-white/5">
+    <div className="glass-panel rounded-2xl overflow-hidden">
       <Table>
-        <TableHeader className="bg-secondary/50">
-          <TableRow className="border-b-0 hover:bg-transparent">
-            <TableHead className="font-semibold py-4">Data</TableHead>
-            <TableHead className="font-semibold py-4">Produto</TableHead>
-            <TableHead className="font-semibold py-4">Qtd</TableHead>
-            <TableHead className="font-semibold py-4 text-right">Valor</TableHead>
+        <TableHeader className="bg-secondary/30">
+          <TableRow className="border-b border-black/5 dark:border-white/5 hover:bg-transparent">
+            <TableHead className="font-semibold py-4 text-label-secondary">Data</TableHead>
+            <TableHead className="font-semibold py-4 text-label-secondary">Produto</TableHead>
+            <TableHead className="font-semibold py-4 text-label-secondary text-right">
+              Qtd
+            </TableHead>
+            <TableHead className="font-semibold py-4 text-label-secondary text-right">
+              Valor
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {sales.length === 0 ? (
-            <TableRow>
-              <TableCell colSpan={4} className="h-48 text-center text-muted-foreground">
-                Nenhuma venda registrada.
+          {sales.map((sale) => (
+            <TableRow
+              key={sale.id}
+              className="border-b border-black/5 dark:border-white/5 hover:bg-secondary/20 transition-colors"
+            >
+              <TableCell className="py-4">
+                {format(parseISO(sale.sale_date), 'dd MMM, yyyy', { locale: ptBR })}
+              </TableCell>
+              <TableCell className="py-4 font-medium">{sale.product_name}</TableCell>
+              <TableCell className="py-4 text-right text-muted-foreground">
+                {sale.quantity}
+              </TableCell>
+              <TableCell className="py-4 text-right font-semibold text-success">
+                {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
+                  sale.sale_value,
+                )}
               </TableCell>
             </TableRow>
-          ) : (
-            sales.map((sale) => (
-              <TableRow
-                key={sale.id}
-                className="border-b border-black/5 dark:border-white/5 hover:bg-secondary/20"
-              >
-                <TableCell className="py-4">
-                  {format(parseISO(sale.sale_date), 'dd MMM, yyyy', { locale: ptBR })}
-                </TableCell>
-                <TableCell className="py-4 font-medium">{sale.product_name}</TableCell>
-                <TableCell className="py-4 text-muted-foreground">{sale.quantity}</TableCell>
-                <TableCell className="py-4 text-right font-semibold text-primary">
-                  {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
-                    sale.sale_value,
-                  )}
-                </TableCell>
-              </TableRow>
-            ))
-          )}
+          ))}
         </TableBody>
       </Table>
     </div>
