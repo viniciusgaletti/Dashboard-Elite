@@ -7,6 +7,7 @@
 @layer base {
   :root {
     --background: 0 0% 100%;
+    --background-secondary: 240 5% 96%;
     --foreground: 0 0% 0%;
 
     --card: 0 0% 100%;
@@ -47,13 +48,17 @@
     --sidebar-accent-foreground: 0 0% 0%;
     --sidebar-border: 240 5% 84%;
     --sidebar-ring: 211 100% 50%;
+
+    --label-primary: 0 0% 0%;
+    --label-secondary: 240 4% 46%;
   }
 
   .dark {
     --background: 0 0% 0%;
+    --background-secondary: 240 4% 11%; /* #1C1C1E */
     --foreground: 0 0% 100%;
 
-    --card: 240 4% 11%; /* #1C1C1E */
+    --card: 240 4% 11%;
     --card-foreground: 0 0% 100%;
 
     --popover: 240 4% 11%;
@@ -89,30 +94,31 @@
     --sidebar-accent-foreground: 0 0% 100%;
     --sidebar-border: 240 4% 20%;
     --sidebar-ring: 210 100% 52%;
+
+    --label-primary: 0 0% 100%;
+    --label-secondary: 240 5% 65%;
   }
 }
 
 @layer utilities {
-  .material-regular {
-    background-color: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+  .glass-panel {
+    @apply bg-background/70 backdrop-blur-xl border border-white/20 dark:border-white/10 shadow-elevation;
   }
-  .dark .material-regular {
-    background-color: rgba(28, 28, 30, 0.7);
+  .material-regular {
+    @apply bg-background/70 backdrop-blur-xl transition-all duration-300 ease-out;
   }
 
   .text-large-title {
-    @apply text-[34px] font-bold leading-tight tracking-tight;
+    @apply text-[34px] font-bold leading-tight tracking-tight text-label-primary;
   }
   .text-headline {
-    @apply text-[17px] font-semibold leading-snug tracking-tight;
+    @apply text-[17px] font-semibold leading-snug tracking-tight text-label-primary;
   }
   .text-body {
-    @apply text-[17px] font-normal leading-normal tracking-tight;
+    @apply text-[17px] font-normal leading-normal tracking-tight text-label-primary;
   }
   .text-caption {
-    @apply text-[12px] font-normal leading-none text-muted-foreground;
+    @apply text-[12px] font-normal leading-none text-label-secondary;
   }
 
   /* Animations */
@@ -127,6 +133,6 @@
     }
   }
   .animate-fade-in-up {
-    animation: fade-in-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: fade-in-up 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
 }
