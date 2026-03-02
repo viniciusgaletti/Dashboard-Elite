@@ -8,8 +8,80 @@ interface UseStreamDataReturn {
   error: string | null
 }
 
+const cleanNumeric = (val: any): string => {
+  if (typeof val !== 'string') val = String(val)
+  if (val.includes('#')) return '0'
+  let clean = val
+    .replace(/R\$\s?/g, '')
+    .replace('%', '')
+    .trim()
+  if (clean.includes('.') && clean.includes(',')) {
+    clean =
+      clean.lastIndexOf(',') > clean.lastIndexOf('.')
+        ? clean.replace(/\./g, '').replace(',', '.')
+        : clean.replace(/,/g, '')
+  } else if (clean.includes(',')) {
+    clean = clean.replace(',', '.')
+  }
+  return clean.replace(/[^\d.-]/g, '')
+}
+
+const parseNumber = (val: any): number => {
+  const num = Number(cleanNumeric(val))
+  return isNaN(num) ? 0 : num
+}
+const parseCurrency = parseNumber
+const parsePercentage = parseNumber
+
+const normalizeKey = (key: string) =>
+  key
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .trim()
+
+const getVal = (rowObj: Record<string, string>, aliases: string[]) => {
+  for (const alias of aliases) if (rowObj[alias] !== undefined) return rowObj[alias]
+  return ''
+}
+
+function parseCSV(text: string) {
+  const result: string[][] = []
+  let row: string[] = []
+  let current = ''
+  let inQuotes = false
+  for (let i = 0; i < text.length; i++) {
+    const char = text[i]
+    if (inQuotes) {
+      if (char === '"') {
+        if (text[i + 1] === '"') {
+          current += '"'
+          i++
+        } else inQuotes = false
+      } else current += char
+    } else {
+      if (char === '"') inQuotes = true
+      else if (char === ',') {
+        row.push(current)
+        current = ''
+      } else if (char === '\n' || char === '\r') {
+        row.push(current)
+        result.push(row)
+        row = []
+        current = ''
+        if (char === '\r' && text[i + 1] === '\n') i++
+      } else current += char
+    }
+  }
+  if (current || row.length > 0) {
+    row.push(current)
+    result.push(row)
+  }
+  return result
+}
+
 const calculateKPIs = (data: StreamData[]): KPIData => {
-  if (data.length === 0) {
+  if (!data.length)
     return {
       faturamentoTotal: 0,
       totalVendas: 0,
@@ -26,29 +98,17 @@ const calculateKPIs = (data: StreamData[]): KPIData => {
       recordeConversaoApresentador: '-',
       recordeConversaoData: '-',
     }
-  }
-
   const faturamentoTotal = data.reduce((acc, curr) => acc + curr.revenue, 0)
   const totalVendas = data.reduce((acc, curr) => acc + curr.sales, 0)
   const totalLives = data.length
-
-  const faturamentoPorLive = totalLives > 0 ? faturamentoTotal / totalLives : 0
-  const conversaoMedia =
-    totalLives > 0 ? data.reduce((acc, curr) => acc + curr.conversion, 0) / totalLives : 0
-  const mediaVendasPorLive = totalLives > 0 ? totalVendas / totalLives : 0
-  const retencaoMedia =
-    totalLives > 0 ? data.reduce((acc, curr) => acc + curr.retention, 0) / totalLives : 0
-
   let melhorDia = data[0].date
   let maxFaturamento = data[0].revenue
-
   let recordeVendas = data[0].sales
-  let recordeVendasApresentador = data[0].presenter
-  let recordeVendasData = data[0].date
-
+  let recVendasApr = data[0].presenter
+  let recVendasData = data[0].date
   let recordeConversao = data[0].conversion
-  let recordeConversaoApresentador = data[0].presenter
-  let recordeConversaoData = data[0].date
+  let recConvApr = data[0].presenter
+  let recConvData = data[0].date
 
   data.forEach((row) => {
     if (row.revenue > maxFaturamento) {
@@ -57,31 +117,31 @@ const calculateKPIs = (data: StreamData[]): KPIData => {
     }
     if (row.sales > recordeVendas) {
       recordeVendas = row.sales
-      recordeVendasApresentador = row.presenter
-      recordeVendasData = row.date
+      recVendasApr = row.presenter
+      recVendasData = row.date
     }
     if (row.conversion > recordeConversao) {
       recordeConversao = row.conversion
-      recordeConversaoApresentador = row.presenter
-      recordeConversaoData = row.date
+      recConvApr = row.presenter
+      recConvData = row.date
     }
   })
 
   return {
     faturamentoTotal,
     totalVendas,
-    faturamentoPorLive,
-    conversaoMedia,
+    faturamentoPorLive: faturamentoTotal / totalLives,
+    conversaoMedia: data.reduce((acc, curr) => acc + curr.conversion, 0) / totalLives,
     melhorDia,
     totalLives,
-    mediaVendasPorLive,
-    retencaoMedia,
+    mediaVendasPorLive: totalVendas / totalLives,
+    retencaoMedia: data.reduce((acc, curr) => acc + curr.retention, 0) / totalLives,
     recordeVendas,
-    recordeVendasApresentador,
-    recordeVendasData,
+    recordeVendasApresentador: recVendasApr,
+    recordeVendasData: recVendasData,
     recordeConversao,
-    recordeConversaoApresentador,
-    recordeConversaoData,
+    recordeConversaoApresentador: recConvApr,
+    recordeConversaoData: recConvData,
   }
 }
 
@@ -90,7 +150,6 @@ export const useStreamData = (url: string): UseStreamDataReturn => {
   const [kpis, setKpis] = useState<KPIData | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
-
   const isFirstLoad = useRef(true)
 
   const fetchData = useCallback(async () => {
@@ -98,53 +157,50 @@ export const useStreamData = (url: string): UseStreamDataReturn => {
       setIsLoading(false)
       return
     }
-
     try {
-      if (isFirstLoad.current) {
-        setIsLoading(true)
-      }
+      if (isFirstLoad.current) setIsLoading(true)
       setError(null)
-
-      const cacheBuster = `_t=${new Date().getTime()}`
-      const fetchUrl = url.includes('?') ? `${url}&${cacheBuster}` : `${url}?${cacheBuster}`
-
+      const fetchUrl = url.includes('?')
+        ? `${url}&_t=${new Date().getTime()}`
+        : `${url}?_t=${new Date().getTime()}`
       const response = await fetch(fetchUrl)
-      if (!response.ok) {
-        throw new Error('Falha ao buscar o arquivo CSV')
-      }
+      if (!response.ok) throw new Error('Falha ao buscar o arquivo CSV')
 
       const text = await response.text()
-      const rows = text.split('\n').filter((row) => row.trim().length > 0)
-
+      const rows = parseCSV(text).filter((row) => row.some((cell) => cell.trim().length > 0))
       if (rows.length < 2) {
         setData([])
         setKpis(calculateKPIs([]))
         return
       }
 
-      const headers = rows[0].split(',').map((h) => h.trim().toLowerCase())
+      const headers = rows[0].map((h) => normalizeKey(h))
       const parsedData: StreamData[] = []
-
       for (let i = 1; i < rows.length; i++) {
-        const values = rows[i].split(',').map((v) => v.trim())
         const rowObj: Record<string, string> = {}
-
-        headers.forEach((header, index) => {
-          rowObj[header] = values[index] || ''
+        headers.forEach((h, idx) => {
+          rowObj[h] = rows[i][idx] ? rows[i][idx].trim() : ''
         })
 
         parsedData.push({
-          date: rowObj.date || rowObj.data || '',
-          views: Number(rowObj.views || rowObj.visualizacoes) || 0,
-          leads: Number(rowObj.leads) || 0,
-          conversion: Number(rowObj.conversion || rowObj.conversao) || 0,
-          revenue: Number(rowObj.revenue || rowObj.faturamento) || 0,
-          sales: Number(rowObj.sales || rowObj.vendas || rowObj.leads) || 0,
-          presenter: rowObj.presenter || rowObj.apresentador || 'Desconhecido',
-          retention: Number(rowObj.retention || rowObj.retencao) || 0,
+          date: getVal(rowObj, ['data']),
+          views: parseNumber(getVal(rowObj, ['pico de pessoas', 'pico', 'audiencia', 'max'])),
+          leads: parseNumber(getVal(rowObj, ['leads', 'cadastros'])),
+          conversion: parsePercentage(
+            getVal(rowObj, ['conversao', 'tx conversao', 'taxa de conversao']),
+          ),
+          revenue: parseCurrency(
+            getVal(rowObj, ['faturamento', 'valor', 'receita', 'faturamento total']),
+          ),
+          sales: parseNumber(
+            getVal(rowObj, ['numero de vendas', 'vendas', 'qtd vendas', 'quantidade']),
+          ),
+          presenter: getVal(rowObj, ['apresentador', 'host', 'nome']) || 'Desconhecido',
+          retention: parsePercentage(
+            getVal(rowObj, ['retencao', 'tx retencao', 'taxa de retencao']),
+          ),
         })
       }
-
       setData(parsedData)
       setKpis(calculateKPIs(parsedData))
     } catch (err) {
@@ -160,14 +216,8 @@ export const useStreamData = (url: string): UseStreamDataReturn => {
   useEffect(() => {
     isFirstLoad.current = true
     fetchData()
-
-    const intervalId = setInterval(() => {
-      fetchData()
-    }, 30000)
-
-    return () => {
-      clearInterval(intervalId)
-    }
+    const intervalId = setInterval(fetchData, 30000)
+    return () => clearInterval(intervalId)
   }, [fetchData])
 
   return { data, kpis, isLoading, error }
