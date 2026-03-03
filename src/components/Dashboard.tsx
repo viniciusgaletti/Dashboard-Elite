@@ -36,7 +36,7 @@ interface DashboardProps {
 export function Dashboard({ csvUrl, title, fullTitle, icon: Icon }: DashboardProps) {
   const { rawData, data, kpis, isLoading, error, filterState, setFilterState, availableHosts } =
     useStreamData(csvUrl)
-  const { kpiComparisons, hostPerformance, weekdayEfficiency, weeklyComparisonData } =
+  const { kpiComparisons, comparisonPeriod, previousPeriodData, hostPerformance, weekdayEfficiency, weeklyComparisonData, availableWeekDates } =
     useDashboardAnalytics(rawData, data, filterState, kpis)
 
   useEffect(() => {
@@ -63,6 +63,8 @@ export function Dashboard({ csvUrl, title, fullTitle, icon: Icon }: DashboardPro
         filterState={filterState}
         setFilterState={setFilterState}
         availableHosts={availableHosts}
+        availableWeekDates={availableWeekDates}
+        comparisonPeriod={comparisonPeriod}
       />
 
       {isLoading ? (
@@ -91,8 +93,8 @@ export function Dashboard({ csvUrl, title, fullTitle, icon: Icon }: DashboardPro
             <HostComparisonCard data={hostPerformance} />
           )}
 
-          {filterState.weeklyComparisonEnabled && filterState.weeklyComparisonDay !== 'all' && (
-            <WeeklyComparisonMultiCard data={weeklyComparisonData} />
+          {filterState.weeklyComparisonEnabled && filterState.weeklyComparisonDay !== 'all' && weeklyComparisonData.length > 0 && (
+            <WeeklyComparisonMultiCard data={weeklyComparisonData} selectedDay={filterState.weeklyComparisonDay} />
           )}
 
           <div
@@ -105,6 +107,7 @@ export function Dashboard({ csvUrl, title, fullTitle, icon: Icon }: DashboardPro
               icon={DollarSign}
               colorClass="text-success"
               comparison={kpiComparisons?.faturamentoTotal}
+              tooltip="Soma do faturamento de todas as lives no período selecionado."
             />
             <KPICard
               title="Total de Vendas"
@@ -112,6 +115,7 @@ export function Dashboard({ csvUrl, title, fullTitle, icon: Icon }: DashboardPro
               icon={Target}
               colorClass="text-primary"
               comparison={kpiComparisons?.totalVendas}
+              tooltip="Número total de vendas realizadas em todas as lives do período."
             />
             <KPICard
               title="Fat. Médio por Live"
@@ -119,6 +123,7 @@ export function Dashboard({ csvUrl, title, fullTitle, icon: Icon }: DashboardPro
               icon={DollarSign}
               colorClass="text-success"
               comparison={kpiComparisons?.faturamentoPorLive}
+              tooltip="Faturamento total dividido pelo número de lives realizadas no período."
             />
             <KPICard
               title="Conversão Média"
@@ -126,12 +131,14 @@ export function Dashboard({ csvUrl, title, fullTitle, icon: Icon }: DashboardPro
               icon={TrendingUp}
               colorClass="text-orange-500"
               comparison={kpiComparisons?.conversaoMedia}
+              tooltip="Média da taxa de conversão de todas as lives. Calculada como a média das conversões individuais de cada live."
             />
             <KPICard
               title="Melhor Dia"
               value={kpis.melhorDia}
               icon={Calendar}
               colorClass="text-accent"
+              tooltip="Dia da semana com a maior média de taxa de conversão no período selecionado."
             />
             <KPICard
               title="Total de Lives"
@@ -139,6 +146,7 @@ export function Dashboard({ csvUrl, title, fullTitle, icon: Icon }: DashboardPro
               icon={Video}
               colorClass="text-primary"
               comparison={kpiComparisons?.totalLives}
+              tooltip="Quantidade total de lives realizadas no período selecionado."
             />
             <KPICard
               title="Média Vendas/Live"
@@ -146,6 +154,7 @@ export function Dashboard({ csvUrl, title, fullTitle, icon: Icon }: DashboardPro
               icon={Activity}
               colorClass="text-primary"
               comparison={kpiComparisons?.mediaVendasPorLive}
+              tooltip="Total de vendas dividido pelo número de lives do período."
             />
             <KPICard
               title="Retenção Média"
@@ -153,6 +162,7 @@ export function Dashboard({ csvUrl, title, fullTitle, icon: Icon }: DashboardPro
               icon={Users}
               colorClass="text-accent"
               comparison={kpiComparisons?.retencaoMedia}
+              tooltip="Média da taxa de retenção de audiência em todas as lives do período."
             />
             <KPICard
               title="Recorde Vendas"
@@ -160,6 +170,7 @@ export function Dashboard({ csvUrl, title, fullTitle, icon: Icon }: DashboardPro
               subtitle={`${kpis.recordeVendasApresentador} • ${kpis.recordeVendasData}`}
               icon={Award}
               colorClass="text-yellow-500"
+              tooltip="Maior número de vendas registrado em uma única live do período, com o apresentador e a data."
             />
             <KPICard
               title="Recorde Conversão"
@@ -167,6 +178,7 @@ export function Dashboard({ csvUrl, title, fullTitle, icon: Icon }: DashboardPro
               subtitle={`${kpis.recordeConversaoApresentador} • ${kpis.recordeConversaoData}`}
               icon={Award}
               colorClass="text-yellow-500"
+              tooltip="Maior taxa de conversão registrada em uma única live do período, com o apresentador e a data."
             />
           </div>
 
@@ -175,7 +187,7 @@ export function Dashboard({ csvUrl, title, fullTitle, icon: Icon }: DashboardPro
             <WeekdayEfficiencyChart data={weekdayEfficiency} />
           </div>
 
-          <ConversionAreaChart data={data} />
+          <ConversionAreaChart data={data} previousData={previousPeriodData} comparisonEnabled={filterState.comparisonEnabled} />
 
           <div className="space-y-4">
             <h3 className="text-headline text-xl font-semibold">Detalhamento por Dia</h3>

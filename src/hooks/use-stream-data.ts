@@ -35,7 +35,7 @@ export const useStreamData = (url: string): UseStreamDataReturn => {
     comparisonEnabled: false,
     weeklyComparisonEnabled: false,
     weeklyComparisonDay: 'all',
-    weeklyComparisonSelectedWeeks: [1, 2, 3, 4],
+    weeklyComparisonSelectedDates: [],
   })
 
   const fetchData = useCallback(async () => {
@@ -84,7 +84,11 @@ export const useStreamData = (url: string): UseStreamDataReturn => {
           retention: parseNumber(getVal(rowObj, ['retencao', 'tx retencao', 'taxa de retencao'])),
         })
       }
-      setRawData(parsedData)
+
+      const filledData = parsedData.filter(
+        (row) => row.views > 0 || row.leads > 0 || row.revenue > 0 || row.sales > 0,
+      )
+      setRawData(filledData)
     } catch (err) {
       setError('Erro ao carregar dados')
     } finally {

@@ -41,7 +41,7 @@ export interface FilterState {
   comparisonEnabled: boolean
   weeklyComparisonEnabled: boolean
   weeklyComparisonDay: string
-  weeklyComparisonSelectedWeeks: number[]
+  weeklyComparisonSelectedDates: string[]
 }
 
 export interface KPIComparison {
