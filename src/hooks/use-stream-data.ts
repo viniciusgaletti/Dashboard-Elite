@@ -184,16 +184,16 @@ export const useStreamData = (url: string): UseStreamDataReturn => {
 
         parsedData.push({
           date: getVal(rowObj, ['data']),
-          views: parseNumber(getVal(rowObj, ['pico de pessoas', 'pico', 'audiencia', 'max'])),
+          views: parseNumber(getVal(rowObj, ['pico', 'pico de pessoas', 'audiencia', 'max'])),
           leads: parseNumber(getVal(rowObj, ['leads', 'cadastros'])),
           conversion: parsePercentage(
             getVal(rowObj, ['conversao', 'tx conversao', 'taxa de conversao']),
           ),
           revenue: parseCurrency(
-            getVal(rowObj, ['faturamento', 'valor', 'receita', 'faturamento total']),
+            getVal(rowObj, ['receita', 'faturamento', 'valor', 'faturamento total']),
           ),
           sales: parseNumber(
-            getVal(rowObj, ['numero de vendas', 'vendas', 'qtd vendas', 'quantidade']),
+            getVal(rowObj, ['vendas', 'qtdvendas', 'qtd vendas', 'quantidade', 'numero de vendas']),
           ),
           presenter: getVal(rowObj, ['apresentador', 'host', 'nome']) || 'Desconhecido',
           retention: parsePercentage(
