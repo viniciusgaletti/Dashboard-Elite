@@ -15,8 +15,8 @@ export function ConversionAreaChart({ data }: { data: StreamData[] }) {
         <CardContent className="pb-4">
           <ChartContainer
             config={{
-              views: { label: 'Visualizações', color: 'hsl(var(--primary))' },
-              leads: { label: 'Leads', color: 'hsl(var(--accent))' },
+              views: { label: 'Visualizações', color: '#D9B979' },
+              leads: { label: 'Leads', color: '#D9B979' },
             }}
             className="h-[300px] w-full"
           >
@@ -24,8 +24,8 @@ export function ConversionAreaChart({ data }: { data: StreamData[] }) {
               <AreaChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <defs>
                   <linearGradient id="colorViews" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="var(--color-views)" stopOpacity={0.3} />
-                    <stop offset="95%" stopColor="var(--color-views)" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#D9B979" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="#D9B979" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid vertical={false} stroke="hsl(var(--border))" strokeOpacity={0.1} />
@@ -44,18 +44,19 @@ export function ConversionAreaChart({ data }: { data: StreamData[] }) {
                 />
                 <ChartTooltip
                   content={
-                    <ChartTooltipContent className="glass-panel border-0 shadow-elevation" />
+                    <ChartTooltipContent className="glass-panel border-0 shadow-elevation [&_.font-mono]:!text-[#D9B979]" />
                   }
-                  cursor={{ stroke: 'hsl(var(--primary))', strokeWidth: 1, strokeDasharray: '4 4' }}
+                  cursor={{ stroke: '#D9B979', strokeWidth: 1, strokeDasharray: '4 4' }}
                 />
                 <Area
                   yAxisId="left"
                   type="monotone"
                   dataKey="views"
-                  stroke="var(--color-views)"
+                  stroke="#D9B979"
                   strokeWidth={3}
                   fillOpacity={1}
                   fill="url(#colorViews)"
+                  activeDot={{ r: 6, fill: '#D9B979', stroke: 'var(--background)', strokeWidth: 2 }}
                 />
               </AreaChart>
             </ResponsiveContainer>
@@ -69,15 +70,15 @@ export function ConversionAreaChart({ data }: { data: StreamData[] }) {
         </CardHeader>
         <CardContent className="pb-4">
           <ChartContainer
-            config={{ revenue: { label: 'Receita', color: 'hsl(var(--success))' } }}
+            config={{ revenue: { label: 'Receita', color: '#D9B979' } }}
             className="h-[300px] w-full"
           >
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <defs>
                   <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="var(--color-revenue)" stopOpacity={0.3} />
-                    <stop offset="95%" stopColor="var(--color-revenue)" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#D9B979" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="#D9B979" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid vertical={false} stroke="hsl(var(--border))" strokeOpacity={0.1} />
@@ -96,17 +97,18 @@ export function ConversionAreaChart({ data }: { data: StreamData[] }) {
                 />
                 <ChartTooltip
                   content={
-                    <ChartTooltipContent className="glass-panel border-0 shadow-elevation" />
+                    <ChartTooltipContent className="glass-panel border-0 shadow-elevation [&_.font-mono]:!text-[#D9B979]" />
                   }
-                  cursor={{ stroke: 'hsl(var(--success))', strokeWidth: 1, strokeDasharray: '4 4' }}
+                  cursor={{ stroke: '#D9B979', strokeWidth: 1, strokeDasharray: '4 4' }}
                 />
                 <Area
                   type="monotone"
                   dataKey="revenue"
-                  stroke="var(--color-revenue)"
+                  stroke="#D9B979"
                   strokeWidth={3}
                   fillOpacity={1}
                   fill="url(#colorRev)"
+                  activeDot={{ r: 6, fill: '#D9B979', stroke: 'var(--background)', strokeWidth: 2 }}
                 />
               </AreaChart>
             </ResponsiveContainer>

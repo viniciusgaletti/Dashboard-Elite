@@ -35,10 +35,12 @@ export function KPICard({
             </div>
           )}
         </div>
-        <div className="space-y-1 min-w-0">
-          <h3 className="text-2xl lg:text-3xl tracking-tight font-semibold truncate min-w-0">
-            {value}
-          </h3>
+        <div className="space-y-1 min-w-0 w-full overflow-hidden">
+          <div className="overflow-x-auto scrollbar-none w-full">
+            <h3 className="font-display font-bold tracking-tighter whitespace-nowrap text-xl sm:text-2xl 2xl:text-3xl">
+              {value}
+            </h3>
+          </div>
           {subtitle && (
             <p className="text-xs text-muted-foreground font-medium truncate min-w-0">{subtitle}</p>
           )}
