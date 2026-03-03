@@ -17,7 +17,14 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { KPICard } from '@/components/KPICard'
 import { ConversionAreaChart } from '@/components/ConversionAreaChart'
 import { StreamTable } from '@/components/StreamTable'
+import { FilterBar } from '@/components/FilterBar'
+import { HostPerformanceChart } from '@/components/HostPerformanceChart'
+import { WeekdayEfficiencyChart } from '@/components/WeekdayEfficiencyChart'
+import { HostComparisonCard } from '@/components/HostComparisonCard'
+import { WeeklyComparisonMultiCard } from '@/components/WeeklyComparisonMultiCard'
 import { useStreamData } from '@/hooks/use-stream-data'
+import { useDashboardAnalytics } from '@/hooks/use-dashboard-analytics'
+import { formatCurrency, formatNumber, formatPercent } from '@/lib/data-utils'
 
 interface DashboardProps {
   csvUrl: string
@@ -27,20 +34,17 @@ interface DashboardProps {
 }
 
 export function Dashboard({ csvUrl, title, fullTitle, icon: Icon }: DashboardProps) {
-  const { data, kpis, isLoading, error } = useStreamData(csvUrl)
+  const { rawData, data, kpis, isLoading, error, filterState, setFilterState, availableHosts } =
+    useStreamData(csvUrl)
+  const { kpiComparisons, hostPerformance, weekdayEfficiency, weeklyComparisonData } =
+    useDashboardAnalytics(rawData, data, filterState, kpis)
 
   useEffect(() => {
     if (error) toast.error(error)
   }, [error])
 
-  const formatCurrency = (val: number) =>
-    new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val)
-  const formatPercent = (val: number) => `${val.toFixed(1)}%`
-  const formatNumber = (val: number) =>
-    new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 1 }).format(val)
-
   return (
-    <div className="animate-fade-in-up h-full flex flex-col space-y-8 pb-12">
+    <div className="animate-fade-in-up h-full flex flex-col space-y-8 pb-12 relative">
       <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between glass-panel p-6 rounded-2xl">
         <div className="w-full space-y-2">
           <div className="flex items-center gap-3">
@@ -55,6 +59,12 @@ export function Dashboard({ csvUrl, title, fullTitle, icon: Icon }: DashboardPro
         </div>
       </div>
 
+      <FilterBar
+        filterState={filterState}
+        setFilterState={setFilterState}
+        availableHosts={availableHosts}
+      />
+
       {isLoading ? (
         <div className="space-y-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
@@ -67,38 +77,49 @@ export function Dashboard({ csvUrl, title, fullTitle, icon: Icon }: DashboardPro
       ) : data.length === 0 || !kpis ? (
         <div className="flex flex-col items-center justify-center py-20 glass-panel rounded-2xl text-center">
           <FileSpreadsheet className="w-16 h-16 text-muted-foreground mb-6 opacity-40" />
-          <h3 className="text-large-title text-2xl mb-2">Nenhum dado carregado</h3>
+          <h3 className="text-large-title text-2xl mb-2">Nenhum dado encontrado</h3>
           <p className="text-body text-muted-foreground max-w-md">
-            Não foi possível carregar os dados para o dashboard. O arquivo pode estar vazio ou
-            indisponível.
+            Não foi possível encontrar dados para os filtros selecionados ou o arquivo está vazio.
           </p>
         </div>
       ) : (
         <>
+          {filterState.comparisonEnabled && filterState.apresentadores.length !== 1 && (
+            <HostComparisonCard data={hostPerformance} />
+          )}
+
+          {filterState.weeklyComparisonEnabled && filterState.weeklyComparisonDay !== 'all' && (
+            <WeeklyComparisonMultiCard data={weeklyComparisonData} />
+          )}
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
             <KPICard
               title="Faturamento Total"
               value={formatCurrency(kpis.faturamentoTotal)}
               icon={DollarSign}
               colorClass="text-success"
+              comparison={kpiComparisons?.faturamentoTotal}
             />
             <KPICard
               title="Total de Vendas"
               value={formatNumber(kpis.totalVendas)}
               icon={Target}
               colorClass="text-primary"
+              comparison={kpiComparisons?.totalVendas}
             />
             <KPICard
               title="Fat. Médio por Live"
               value={formatCurrency(kpis.faturamentoPorLive)}
               icon={DollarSign}
               colorClass="text-success"
+              comparison={kpiComparisons?.faturamentoPorLive}
             />
             <KPICard
               title="Conversão Média"
               value={formatPercent(kpis.conversaoMedia)}
               icon={TrendingUp}
               colorClass="text-orange-500"
+              comparison={kpiComparisons?.conversaoMedia}
             />
             <KPICard
               title="Melhor Dia"
@@ -111,18 +132,21 @@ export function Dashboard({ csvUrl, title, fullTitle, icon: Icon }: DashboardPro
               value={formatNumber(kpis.totalLives)}
               icon={Video}
               colorClass="text-primary"
+              comparison={kpiComparisons?.totalLives}
             />
             <KPICard
               title="Média Vendas/Live"
               value={formatNumber(kpis.mediaVendasPorLive)}
               icon={Activity}
               colorClass="text-primary"
+              comparison={kpiComparisons?.mediaVendasPorLive}
             />
             <KPICard
               title="Retenção Média"
               value={formatPercent(kpis.retencaoMedia)}
               icon={Users}
               colorClass="text-accent"
+              comparison={kpiComparisons?.retencaoMedia}
             />
             <KPICard
               title="Recorde Vendas"
@@ -138,6 +162,11 @@ export function Dashboard({ csvUrl, title, fullTitle, icon: Icon }: DashboardPro
               icon={Award}
               colorClass="text-yellow-500"
             />
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <HostPerformanceChart data={hostPerformance} />
+            <WeekdayEfficiencyChart data={weekdayEfficiency} />
           </div>
 
           <ConversionAreaChart data={data} />

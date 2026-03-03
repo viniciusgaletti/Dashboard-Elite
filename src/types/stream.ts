@@ -32,3 +32,33 @@ export interface StreamSummary {
   averageConversion: number
   totalRevenue: number
 }
+
+export interface FilterState {
+  dataInicio: Date | null
+  dataFim: Date | null
+  apresentadores: string[]
+  diaSemana: string
+  comparisonEnabled: boolean
+  weeklyComparisonEnabled: boolean
+  weeklyComparisonDay: string
+  weeklyComparisonSelectedWeeks: number[]
+}
+
+export interface KPIComparison {
+  previousValue: number
+  variation: number
+}
+
+export interface HostKPIData {
+  host: string
+  conversaoMedia: number
+  faturamentoTotal: number
+  totalVendas: number
+}
+
+export interface WeekdayKPIData {
+  weekday: string
+  dayIndex: number
+  conversaoMedia: number
+  faturamentoTotal: number
+}
