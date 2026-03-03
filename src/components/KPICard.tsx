@@ -35,9 +35,9 @@ export function KPICard({
             </div>
           )}
         </div>
-        <div className="space-y-1 min-w-0 w-full overflow-hidden">
-          <div className="overflow-x-auto scrollbar-none w-full">
-            <h3 className="font-display font-bold tracking-tighter whitespace-nowrap text-xl sm:text-2xl 2xl:text-3xl">
+        <div className="space-y-1 min-w-0 w-full">
+          <div className="overflow-x-auto scrollbar-none w-full py-1">
+            <h3 className="font-display font-bold tracking-tighter whitespace-nowrap text-lg sm:text-xl md:text-2xl 2xl:text-3xl leading-normal">
               {value}
             </h3>
           </div>
