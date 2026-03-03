@@ -67,7 +67,10 @@ export function Dashboard({ csvUrl, title, fullTitle, icon: Icon }: DashboardPro
 
       {isLoading ? (
         <div className="space-y-8">
-          <div className="grid gap-4 md:gap-5" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))' }}>
+          <div
+            className="grid gap-4 md:gap-5"
+            style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))' }}
+          >
             {Array.from({ length: 10 }).map((_, i) => (
               <Skeleton key={i} className="h-36 rounded-2xl glass-panel" />
             ))}
@@ -92,7 +95,10 @@ export function Dashboard({ csvUrl, title, fullTitle, icon: Icon }: DashboardPro
             <WeeklyComparisonMultiCard data={weeklyComparisonData} />
           )}
 
-          <div className="grid gap-4 md:gap-5" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))' }}>
+          <div
+            className="grid gap-4 md:gap-5"
+            style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))' }}
+          >
             <KPICard
               title="Faturamento Total"
               value={formatCurrency(kpis.faturamentoTotal)}

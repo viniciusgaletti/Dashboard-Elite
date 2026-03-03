@@ -6,12 +6,7 @@ import { LogOut, ChevronsLeft, ChevronsRight } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { useSidebar } from '@/hooks/use-sidebar'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 
 export function Sidebar({ className }: { className?: string }) {
   const location = useLocation()
