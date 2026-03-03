@@ -2,6 +2,12 @@ import { Card, CardContent } from '@/components/ui/card'
 import { LucideIcon, ArrowUp, ArrowDown } from 'lucide-react'
 import { ReactNode } from 'react'
 import { cn } from '@/lib/utils'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
 
 interface KPICardProps {
   title: string
@@ -11,6 +17,7 @@ interface KPICardProps {
   trend?: ReactNode
   colorClass?: string
   comparison?: { previousValue: number; variation: number }
+  tooltip?: string
 }
 
 export function KPICard({
@@ -21,9 +28,10 @@ export function KPICard({
   trend,
   colorClass = 'text-primary',
   comparison,
+  tooltip,
 }: KPICardProps) {
-  return (
-    <Card className="glass-panel border-0 hover:shadow-elevation transition-all duration-300 ease-out flex flex-col justify-between min-h-[140px] w-full overflow-hidden">
+  const card = (
+    <Card className="glass-panel border-0 hover:shadow-elevation transition-all duration-300 ease-out flex flex-col justify-between min-h-[140px] w-full overflow-hidden cursor-default">
       <CardContent className="p-4 sm:p-5 flex flex-col justify-between h-full min-w-0">
         <div className="flex justify-between items-start min-w-0 gap-2">
           <p className="text-caption font-medium text-muted-foreground truncate min-w-0 flex-1">
@@ -60,11 +68,28 @@ export function KPICard({
                 <ArrowDown className="w-3 h-3" />
               )}
               {Math.abs(comparison.variation).toFixed(1)}%{' '}
-              <span className="text-muted-foreground font-medium ml-1">vs ant.</span>
+              <span className="text-muted-foreground font-medium ml-1">vs. anterior</span>
             </div>
           )}
         </div>
       </CardContent>
     </Card>
+  )
+
+  if (!tooltip) return card
+
+  return (
+    <TooltipProvider delayDuration={300}>
+      <Tooltip>
+        <TooltipTrigger asChild>{card}</TooltipTrigger>
+        <TooltipContent
+          side="bottom"
+          sideOffset={8}
+          className="glass-panel border-0 shadow-elevation max-w-[260px] text-xs leading-relaxed p-3"
+        >
+          {tooltip}
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   )
 }

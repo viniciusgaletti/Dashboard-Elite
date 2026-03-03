@@ -94,27 +94,7 @@ export function Sidebar({ className }: { className?: string }) {
           </nav>
         </div>
 
-        {/* Collapse toggle */}
-        <div className="px-3">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={toggleSidebar}
-            className={cn(
-              'w-full flex items-center gap-2 text-muted-foreground hover:text-foreground transition-all duration-200 mb-2',
-              isCollapsed ? 'justify-center px-0' : 'justify-start px-3',
-            )}
-          >
-            {isCollapsed ? (
-              <ChevronsRight className="w-4 h-4 shrink-0" />
-            ) : (
-              <>
-                <ChevronsLeft className="w-4 h-4 shrink-0" />
-                <span className="text-xs">Minimizar</span>
-              </>
-            )}
-          </Button>
-        </div>
+
 
         {/* User section */}
         <div

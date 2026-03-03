@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
   format,
   subDays,
@@ -27,13 +27,24 @@ import {
 import { MultiSelect } from '@/components/ui/multi-select'
 import { cn } from '@/lib/utils'
 
+const VISIBLE_WEEKS = 8
+
+import { ComparisonPeriodInfo } from '@/hooks/use-dashboard-analytics'
+
 interface FilterBarProps {
   filterState: FilterState
   setFilterState: React.Dispatch<React.SetStateAction<FilterState>>
   availableHosts: string[]
+  availableWeekDates: string[]
+  comparisonPeriod: ComparisonPeriodInfo | null
 }
 
-export function FilterBar({ filterState, setFilterState, availableHosts }: FilterBarProps) {
+export function FilterBar({ filterState, setFilterState, availableHosts, availableWeekDates, comparisonPeriod }: FilterBarProps) {
+  const [showOlderWeeks, setShowOlderWeeks] = useState(false)
+
+  const recentDates = availableWeekDates.slice(0, VISIBLE_WEEKS)
+  const olderDates = availableWeekDates.slice(VISIBLE_WEEKS)
+
   const handlePresetChange = (val: string) => {
     const today = new Date()
     let start = null
@@ -80,6 +91,24 @@ export function FilterBar({ filterState, setFilterState, availableHosts }: Filte
     { value: '5', label: 'Sexta-feira' },
     { value: '6', label: 'Sábado' },
   ]
+
+  const toggleWeekDate = (date: string) => {
+    setFilterState((p) => {
+      const selected = p.weeklyComparisonSelectedDates
+      if (selected.includes(date)) {
+        return { ...p, weeklyComparisonSelectedDates: selected.filter((d) => d !== date) }
+      }
+      return { ...p, weeklyComparisonSelectedDates: [...selected, date] }
+    })
+  }
+
+  const handleWeeklyDayChange = (v: string) => {
+    setFilterState((p) => ({
+      ...p,
+      weeklyComparisonDay: v,
+      weeklyComparisonSelectedDates: [],
+    }))
+  }
 
   return (
     <div className="sticky top-4 z-40 w-full glass-panel rounded-2xl p-4 flex flex-col gap-4 shadow-elevation border border-border/50 mb-8 backdrop-blur-2xl">
@@ -219,13 +248,12 @@ export function FilterBar({ filterState, setFilterState, availableHosts }: Filte
 
         {filterState.weeklyComparisonEnabled && (
           <div className="flex items-center space-x-3 ml-auto animate-fade-in">
-            <Label className="text-sm">Comparar Histórico:</Label>
             <Select
               value={filterState.weeklyComparisonDay}
-              onValueChange={(v) => setFilterState((p) => ({ ...p, weeklyComparisonDay: v }))}
+              onValueChange={handleWeeklyDayChange}
             >
-              <SelectTrigger className="bg-background/50 w-[140px] h-8 text-xs">
-                <SelectValue placeholder="Dia" />
+              <SelectTrigger className="bg-background/50 w-[160px] h-8 text-xs">
+                <SelectValue placeholder="Dia da semana" />
               </SelectTrigger>
               <SelectContent>
                 {daysOfWeek.map((d) => (
@@ -238,6 +266,105 @@ export function FilterBar({ filterState, setFilterState, availableHosts }: Filte
           </div>
         )}
       </div>
+
+      {comparisonPeriod && filterState.comparisonEnabled && (
+        <div className="flex items-center gap-2 pt-2 animate-fade-in">
+          <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold bg-emerald-500/15 text-emerald-400 px-3 py-1 rounded-full">
+            Atual: {comparisonPeriod.currentLabel}
+          </span>
+          <span className="text-[11px] text-muted-foreground">vs.</span>
+          <span className="inline-flex items-center gap-1.5 text-[11px] font-medium bg-secondary/50 text-muted-foreground px-3 py-1 rounded-full">
+            {comparisonPeriod.previousLabel}
+          </span>
+        </div>
+      )}
+
+      {filterState.weeklyComparisonEnabled &&
+        filterState.weeklyComparisonDay !== 'all' &&
+        availableWeekDates.length > 0 && (
+          <div className="flex flex-col gap-3 pt-3 border-t border-border/30 animate-fade-in">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-semibold text-primary bg-primary/10 px-2.5 py-1 rounded-full">
+                  {filterState.weeklyComparisonSelectedDates.length} semana{filterState.weeklyComparisonSelectedDates.length !== 1 ? 's' : ''}
+                </span>
+                <div className="flex gap-1.5 ml-2">
+                  <button
+                    onClick={() => {
+                      const top2 = availableWeekDates.slice(0, 2)
+                      setFilterState((p) => ({ ...p, weeklyComparisonSelectedDates: top2 }))
+                    }}
+                    className="text-[10px] text-muted-foreground hover:text-foreground px-2 py-0.5 rounded bg-secondary/40 hover:bg-secondary transition-colors"
+                  >
+                    2 mais recentes
+                  </button>
+                  {filterState.weeklyComparisonSelectedDates.length > 0 && (
+                    <button
+                      onClick={() => setFilterState((p) => ({ ...p, weeklyComparisonSelectedDates: [] }))}
+                      className="text-[10px] text-muted-foreground hover:text-red-400 px-2 py-0.5 rounded bg-secondary/40 hover:bg-secondary transition-colors"
+                    >
+                      Limpar
+                    </button>
+                  )}
+                </div>
+              </div>
+              {availableWeekDates.length > VISIBLE_WEEKS && (
+                <button
+                  onClick={() => setShowOlderWeeks((v) => !v)}
+                  className="text-[10px] font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
+                >
+                  {showOlderWeeks ? 'Ocultar anteriores' : `Ver anteriores (${availableWeekDates.length - VISIBLE_WEEKS})`}
+                  <span className={cn('transition-transform duration-200 text-[8px]', showOlderWeeks && 'rotate-180')}>▼</span>
+                </button>
+              )}
+            </div>
+
+            <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-thin">
+              {recentDates.map((date, idx) => {
+                const isSelected = filterState.weeklyComparisonSelectedDates.includes(date)
+                const isNewest = idx === 0
+                return (
+                  <button
+                    key={date}
+                    onClick={() => toggleWeekDate(date)}
+                    className={cn(
+                      'inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-medium transition-all duration-200 whitespace-nowrap flex-shrink-0',
+                      isSelected
+                        ? 'bg-primary text-primary-foreground shadow-sm'
+                        : 'bg-secondary/50 text-muted-foreground hover:bg-secondary hover:text-foreground',
+                    )}
+                  >
+                    <span className="inline-block w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: isSelected ? 'currentColor' : 'transparent' }} />
+                    {date}
+                    {isNewest && <span className="text-[9px] opacity-70">(Atual)</span>}
+                  </button>
+                )
+              })}
+            </div>
+
+            {showOlderWeeks && olderDates.length > 0 && (
+              <div className="flex flex-wrap gap-1.5 pt-1 border-t border-border/20 animate-fade-in">
+                {olderDates.map((date) => {
+                  const isSelected = filterState.weeklyComparisonSelectedDates.includes(date)
+                  return (
+                    <button
+                      key={date}
+                      onClick={() => toggleWeekDate(date)}
+                      className={cn(
+                        'inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-medium transition-all duration-200',
+                        isSelected
+                          ? 'bg-primary text-primary-foreground shadow-sm'
+                          : 'bg-secondary/30 text-muted-foreground hover:bg-secondary hover:text-foreground',
+                      )}
+                    >
+                      {date}
+                    </button>
+                  )
+                })}
+              </div>
+            )}
+          </div>
+        )}
     </div>
   )
 }

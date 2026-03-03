@@ -1,6 +1,6 @@
 import { useLocation } from 'react-router-dom'
 import { NAV_LINKS } from '@/lib/constants'
-import { Bell, PanelLeftClose, PanelLeftOpen } from 'lucide-react'
+import { PanelLeftClose, PanelLeftOpen } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { useAuth } from '@/hooks/use-auth'
 import { Button } from '@/components/ui/button'
@@ -33,9 +33,6 @@ export function Header() {
       </div>
 
       <div className="flex items-center gap-4">
-        <Button variant="ghost" size="icon" className="rounded-full bg-secondary/50">
-          <Bell className="w-5 h-5" />
-        </Button>
         <Avatar className="md:hidden">
           <AvatarImage src={`https://img.usecurling.com/ppl/thumbnail?seed=${user?.id}`} />
           <AvatarFallback>{user?.email?.charAt(0).toUpperCase()}</AvatarFallback>

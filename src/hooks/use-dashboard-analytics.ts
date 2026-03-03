@@ -8,7 +8,12 @@ import {
   KPIComparison,
 } from '@/types/stream'
 import { parseDateStr, calculateKPIs } from '@/lib/data-utils'
-import { subMonths } from 'date-fns'
+import { subMonths, format } from 'date-fns'
+
+export interface ComparisonPeriodInfo {
+  currentLabel: string
+  previousLabel: string
+}
 
 export function useDashboardAnalytics(
   rawData: StreamData[],
@@ -16,6 +21,42 @@ export function useDashboardAnalytics(
   filterState: FilterState,
   currentKpis: KPIData | null,
 ) {
+  const comparisonPeriod = useMemo<ComparisonPeriodInfo | null>(() => {
+    if (
+      !filterState.comparisonEnabled ||
+      !filterState.dataInicio ||
+      !filterState.dataFim
+    )
+      return null
+
+    const fmt = (d: Date) => format(d, 'dd/MM')
+    const prevStart = subMonths(filterState.dataInicio, 1)
+    const prevEnd = subMonths(filterState.dataFim, 1)
+    return {
+      currentLabel: `${fmt(filterState.dataInicio)} - ${fmt(filterState.dataFim)}`,
+      previousLabel: `${fmt(prevStart)} - ${fmt(prevEnd)}`,
+    }
+  }, [filterState.comparisonEnabled, filterState.dataInicio, filterState.dataFim])
+
+  const previousPeriodData = useMemo<StreamData[]>(() => {
+    if (
+      !filterState.comparisonEnabled ||
+      !filterState.dataInicio ||
+      !filterState.dataFim
+    )
+      return []
+
+    const prevStart = subMonths(filterState.dataInicio, 1)
+    const prevEnd = subMonths(filterState.dataFim, 1)
+
+    return rawData
+      .filter((row) => {
+        const d = parseDateStr(row.date)
+        return d >= prevStart && d <= prevEnd
+      })
+      .sort((a, b) => parseDateStr(a.date).getTime() - parseDateStr(b.date).getTime())
+  }, [rawData, filterState.comparisonEnabled, filterState.dataInicio, filterState.dataFim])
+
   const kpiComparisons = useMemo(() => {
     if (
       !filterState.comparisonEnabled ||
@@ -25,15 +66,7 @@ export function useDashboardAnalytics(
     )
       return null
 
-    const prevStart = subMonths(filterState.dataInicio, 1)
-    const prevEnd = subMonths(filterState.dataFim, 1)
-
-    const prevData = rawData.filter((row) => {
-      const d = parseDateStr(row.date)
-      return d >= prevStart && d <= prevEnd
-    })
-
-    const prevKpis = calculateKPIs(prevData)
+    const prevKpis = calculateKPIs(previousPeriodData)
     const result: Partial<Record<keyof KPIData, KPIComparison>> = {}
 
     for (const key of Object.keys(currentKpis) as Array<keyof KPIData>) {
@@ -46,7 +79,7 @@ export function useDashboardAnalytics(
     }
 
     return result as Record<keyof KPIData, KPIComparison>
-  }, [rawData, filterState, currentKpis])
+  }, [previousPeriodData, filterState, currentKpis])
 
   const hostPerformance = useMemo(() => {
     const hostMap = new Map<string, StreamData[]>()
@@ -88,19 +121,27 @@ export function useDashboardAnalytics(
     return result.sort((a, b) => a.dayIndex - b.dayIndex)
   }, [filteredData])
 
-  const weeklyComparisonData = useMemo(() => {
+  const availableWeekDates = useMemo(() => {
     if (!filterState.weeklyComparisonEnabled || filterState.weeklyComparisonDay === 'all') return []
 
     const targetDay = Number(filterState.weeklyComparisonDay)
-    const filtered = rawData
+    return rawData
       .filter((row) => {
         const d = parseDateStr(row.date)
         return d.getDay() === targetDay
       })
       .sort((a, b) => parseDateStr(b.date).getTime() - parseDateStr(a.date).getTime())
+      .map((row) => row.date)
+  }, [rawData, filterState.weeklyComparisonEnabled, filterState.weeklyComparisonDay])
 
-    return filtered.slice(0, Math.max(...filterState.weeklyComparisonSelectedWeeks))
+  const weeklyComparisonData = useMemo(() => {
+    if (!filterState.weeklyComparisonEnabled || filterState.weeklyComparisonDay === 'all') return []
+    if (filterState.weeklyComparisonSelectedDates.length === 0) return []
+
+    return rawData
+      .filter((row) => filterState.weeklyComparisonSelectedDates.includes(row.date))
+      .sort((a, b) => parseDateStr(b.date).getTime() - parseDateStr(a.date).getTime())
   }, [rawData, filterState])
 
-  return { kpiComparisons, hostPerformance, weekdayEfficiency, weeklyComparisonData }
+  return { kpiComparisons, comparisonPeriod, previousPeriodData, hostPerformance, weekdayEfficiency, weeklyComparisonData, availableWeekDates }
 }

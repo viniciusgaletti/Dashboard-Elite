@@ -105,8 +105,32 @@ export const calculateKPIs = (data: StreamData[]): KPIData => {
   const faturamentoTotal = data.reduce((acc, curr) => acc + curr.revenue, 0)
   const totalVendas = data.reduce((acc, curr) => acc + curr.sales, 0)
   const totalLives = data.length
-  let melhorDia = data[0].date
-  let maxFaturamento = data[0].revenue
+
+  // Melhor dia = dia da semana com maior média de conversão
+  const dayNames = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado']
+  const dayGroups = new Map<number, number[]>()
+  data.forEach((row) => {
+    const d = new Date(
+      (() => {
+        const parts = row.date.split('/')
+        if (parts.length === 3) return `${parts[2]}-${parts[1]}-${parts[0]}`
+        return row.date
+      })(),
+    )
+    const day = d.getDay()
+    if (!dayGroups.has(day)) dayGroups.set(day, [])
+    dayGroups.get(day)!.push(row.conversion)
+  })
+  let melhorDia = '-'
+  let bestAvgConversion = -1
+  dayGroups.forEach((conversions, dayIdx) => {
+    const avg = conversions.reduce((a, b) => a + b, 0) / conversions.length
+    if (avg > bestAvgConversion) {
+      bestAvgConversion = avg
+      melhorDia = dayNames[dayIdx]
+    }
+  })
+
   let recordeVendas = data[0].sales
   let recVendasApr = data[0].presenter
   let recVendasData = data[0].date
@@ -115,10 +139,6 @@ export const calculateKPIs = (data: StreamData[]): KPIData => {
   let recConvData = data[0].date
 
   data.forEach((row) => {
-    if (row.revenue > maxFaturamento) {
-      maxFaturamento = row.revenue
-      melhorDia = row.date
-    }
     if (row.sales > recordeVendas) {
       recordeVendas = row.sales
       recVendasApr = row.presenter
