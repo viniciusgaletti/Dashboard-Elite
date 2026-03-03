@@ -23,29 +23,29 @@ export function KPICard({
   comparison,
 }: KPICardProps) {
   return (
-    <Card className="glass-panel border-0 hover:shadow-elevation transition-all duration-300 ease-out flex flex-col justify-between min-h-[160px] w-full overflow-hidden">
-      <CardContent className="p-6 flex flex-col justify-between h-full min-w-0">
+    <Card className="glass-panel border-0 hover:shadow-elevation transition-all duration-300 ease-out flex flex-col justify-between min-h-[140px] w-full overflow-hidden">
+      <CardContent className="p-4 sm:p-5 flex flex-col justify-between h-full min-w-0">
         <div className="flex justify-between items-start min-w-0 gap-2">
           <p className="text-caption font-medium text-muted-foreground truncate min-w-0 flex-1">
             {title}
           </p>
           {Icon && (
-            <div className={cn('p-2 rounded-xl bg-secondary/50 shrink-0', colorClass)}>
-              <Icon className="w-4 h-4" />
+            <div className={cn('p-1.5 sm:p-2 rounded-xl bg-secondary/50 shrink-0', colorClass)}>
+              <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </div>
           )}
         </div>
 
-        <div className="flex-1 flex flex-col justify-end mt-4 space-y-1.5 min-w-0 w-full">
-          <div className="overflow-x-auto scrollbar-none w-full py-1">
-            <p className="font-display font-bold tracking-tighter text-foreground text-2xl xl:text-3xl whitespace-nowrap">
+        <div className="flex-1 flex flex-col justify-end mt-3 space-y-1 min-w-0 w-full">
+          <div className="w-full min-w-0">
+            <p className="font-display font-bold tracking-tighter text-foreground kpi-value truncate">
               {value}
             </p>
           </div>
           {subtitle && (
             <p className="text-xs text-muted-foreground font-medium truncate min-w-0">{subtitle}</p>
           )}
-          {trend && <div className="mt-2 min-w-0">{trend}</div>}
+          {trend && <div className="mt-1.5 min-w-0">{trend}</div>}
 
           {comparison && (
             <div
