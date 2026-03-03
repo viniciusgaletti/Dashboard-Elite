@@ -110,13 +110,7 @@ export const calculateKPIs = (data: StreamData[]): KPIData => {
   const dayNames = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado']
   const dayGroups = new Map<number, number[]>()
   data.forEach((row) => {
-    const d = new Date(
-      (() => {
-        const parts = row.date.split('/')
-        if (parts.length === 3) return `${parts[2]}-${parts[1]}-${parts[0]}`
-        return row.date
-      })(),
-    )
+    const d = parseDateStr(row.date)
     const day = d.getDay()
     if (!dayGroups.has(day)) dayGroups.set(day, [])
     dayGroups.get(day)!.push(row.conversion)
