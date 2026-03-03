@@ -4,8 +4,8 @@ export const DASHBOARDS = {
   onboarding: {
     csvUrl:
       'https://docs.google.com/spreadsheets/d/e/2PACX-1vRrg3qnsE3vAMI7NwqVXW31CnvleQjR6RjHPjXEUAZAZVgiorKtf3mFvwqTyBMDEJ2xQO9hUXdcAA9q/pub?output=csv',
-    title: 'live de leads',
-    fullTitle: 'Dashboard da live de leads',
+    title: 'Live de Onboarding',
+    fullTitle: 'Dashboard da Live de Onboarding',
     path: '/',
     icon: GraduationCap,
   },

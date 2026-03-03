@@ -7,8 +7,8 @@ export default function Index() {
   return (
     <Dashboard
       csvUrl={csvUrl}
-      title="live de leads"
-      fullTitle="Dashboard da live de leads"
+      title="Live de Onboarding"
+      fullTitle="Dashboard da Live de Onboarding"
       icon={icon}
     />
   )
