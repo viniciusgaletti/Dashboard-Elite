@@ -23,9 +23,9 @@ export function KPICard({
   comparison,
 }: KPICardProps) {
   return (
-    <Card className="glass-panel border-0 hover:shadow-elevation transition-all duration-300 ease-out h-full min-w-0">
+    <Card className="glass-panel border-0 hover:shadow-elevation transition-all duration-300 ease-out flex flex-col justify-between min-h-[160px] min-w-0">
       <CardContent className="p-6 flex flex-col justify-between h-full min-w-0">
-        <div className="flex justify-between items-start mb-4 min-w-0 gap-2">
+        <div className="flex justify-between items-start min-w-0 gap-2">
           <p className="text-caption font-medium text-muted-foreground truncate min-w-0 flex-1">
             {title}
           </p>
@@ -35,11 +35,12 @@ export function KPICard({
             </div>
           )}
         </div>
-        <div className="space-y-1 min-w-0 w-full">
+
+        <div className="flex-1 flex flex-col justify-end mt-4 space-y-1.5 min-w-0 w-full">
           <div className="overflow-x-auto scrollbar-none w-full py-1">
-            <h3 className="font-display font-bold tracking-tighter whitespace-nowrap text-lg sm:text-xl md:text-2xl 2xl:text-3xl leading-normal">
+            <p className="font-display font-bold tracking-tighter whitespace-nowrap text-foreground text-2xl lg:text-[1.65rem] 2xl:text-3xl">
               {value}
-            </h3>
+            </p>
           </div>
           {subtitle && (
             <p className="text-xs text-muted-foreground font-medium truncate min-w-0">{subtitle}</p>
@@ -49,7 +50,7 @@ export function KPICard({
           {comparison && (
             <div
               className={cn(
-                'flex items-center gap-1 text-xs font-semibold mt-2 animate-fade-in',
+                'flex items-center gap-1 text-xs font-semibold animate-fade-in',
                 comparison.variation >= 0 ? 'text-success' : 'text-destructive',
               )}
             >

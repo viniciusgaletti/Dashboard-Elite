@@ -44,7 +44,7 @@ export function Dashboard({ csvUrl, title, fullTitle, icon: Icon }: DashboardPro
   }, [error])
 
   return (
-    <div className="animate-fade-in-up h-full flex flex-col space-y-8 pb-12 relative">
+    <main className="animate-fade-in-up container max-w-[1600px] w-full py-6 md:py-8 space-y-6 md:space-y-8 relative">
       <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between glass-panel p-6 rounded-2xl">
         <div className="w-full space-y-2">
           <div className="flex items-center gap-3">
@@ -67,9 +67,9 @@ export function Dashboard({ csvUrl, title, fullTitle, icon: Icon }: DashboardPro
 
       {isLoading ? (
         <div className="space-y-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4 md:gap-6">
             {Array.from({ length: 10 }).map((_, i) => (
-              <Skeleton key={i} className="h-32 rounded-2xl glass-panel" />
+              <Skeleton key={i} className="h-40 rounded-2xl glass-panel" />
             ))}
           </div>
           <Skeleton className="h-[400px] rounded-2xl glass-panel w-full" />
@@ -92,7 +92,7 @@ export function Dashboard({ csvUrl, title, fullTitle, icon: Icon }: DashboardPro
             <WeeklyComparisonMultiCard data={weeklyComparisonData} />
           )}
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4 md:gap-6">
             <KPICard
               title="Faturamento Total"
               value={formatCurrency(kpis.faturamentoTotal)}
@@ -177,6 +177,6 @@ export function Dashboard({ csvUrl, title, fullTitle, icon: Icon }: DashboardPro
           </div>
         </>
       )}
-    </div>
+    </main>
   )
 }
