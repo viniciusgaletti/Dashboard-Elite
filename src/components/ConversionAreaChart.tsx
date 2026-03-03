@@ -56,7 +56,9 @@ export function ConversionAreaChart({
           <ChartContainer
             config={{
               revenue: { label: 'Faturamento', color: '#D9B979' },
-              ...(showComparison ? { prevRevenue: { label: 'Período Anterior', color: '#D9B979' } } : {}),
+              ...(showComparison
+                ? { prevRevenue: { label: 'Período Anterior', color: '#D9B979' } }
+                : {}),
             }}
             className="h-[300px] w-full"
           >
@@ -87,7 +89,9 @@ export function ConversionAreaChart({
                   content={
                     <ChartTooltipContent
                       className="glass-panel border-0 shadow-elevation [&_.font-mono]:!text-[#D9B979]"
-                      formatter={(val) => `R$ ${Number(val).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
+                      formatter={(val) =>
+                        `R$ ${Number(val).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`
+                      }
                     />
                   }
                   cursor={{ stroke: '#D9B979', strokeWidth: 1, strokeDasharray: '4 4' }}
@@ -126,7 +130,10 @@ export function ConversionAreaChart({
                 <span className="text-[10px] text-muted-foreground">Atual</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <div className="w-4 h-0.5 bg-[#D9B979]/40 rounded" style={{ borderTop: '2px dashed rgba(217,185,121,0.4)' }} />
+                <div
+                  className="w-4 h-0.5 bg-[#D9B979]/40 rounded"
+                  style={{ borderTop: '2px dashed rgba(217,185,121,0.4)' }}
+                />
                 <span className="text-[10px] text-muted-foreground">Anterior</span>
               </div>
             </div>
@@ -142,7 +149,9 @@ export function ConversionAreaChart({
           <ChartContainer
             config={{
               conversion: { label: 'Conversão', color: '#D9B979' },
-              ...(showComparison ? { prevConversion: { label: 'Período Anterior', color: '#D9B979' } } : {}),
+              ...(showComparison
+                ? { prevConversion: { label: 'Período Anterior', color: '#D9B979' } }
+                : {}),
             }}
             className="h-[300px] w-full"
           >
@@ -212,7 +221,10 @@ export function ConversionAreaChart({
                 <span className="text-[10px] text-muted-foreground">Atual</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <div className="w-4 h-0.5 bg-[#D9B979]/40 rounded" style={{ borderTop: '2px dashed rgba(217,185,121,0.4)' }} />
+                <div
+                  className="w-4 h-0.5 bg-[#D9B979]/40 rounded"
+                  style={{ borderTop: '2px dashed rgba(217,185,121,0.4)' }}
+                />
                 <span className="text-[10px] text-muted-foreground">Anterior</span>
               </div>
             </div>

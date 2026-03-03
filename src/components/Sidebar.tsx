@@ -89,8 +89,6 @@ export function Sidebar({ className }: { className?: string }) {
           </nav>
         </div>
 
-
-
         {/* User section */}
         <div
           className={cn(

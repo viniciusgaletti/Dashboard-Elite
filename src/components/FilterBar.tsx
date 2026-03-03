@@ -39,7 +39,13 @@ interface FilterBarProps {
   comparisonPeriod: ComparisonPeriodInfo | null
 }
 
-export function FilterBar({ filterState, setFilterState, availableHosts, availableWeekDates, comparisonPeriod }: FilterBarProps) {
+export function FilterBar({
+  filterState,
+  setFilterState,
+  availableHosts,
+  availableWeekDates,
+  comparisonPeriod,
+}: FilterBarProps) {
   const [showOlderWeeks, setShowOlderWeeks] = useState(false)
 
   const recentDates = availableWeekDates.slice(0, VISIBLE_WEEKS)
@@ -248,10 +254,7 @@ export function FilterBar({ filterState, setFilterState, availableHosts, availab
 
         {filterState.weeklyComparisonEnabled && (
           <div className="flex items-center space-x-3 ml-auto animate-fade-in">
-            <Select
-              value={filterState.weeklyComparisonDay}
-              onValueChange={handleWeeklyDayChange}
-            >
+            <Select value={filterState.weeklyComparisonDay} onValueChange={handleWeeklyDayChange}>
               <SelectTrigger className="bg-background/50 w-[160px] h-8 text-xs">
                 <SelectValue placeholder="Dia da semana" />
               </SelectTrigger>
@@ -286,7 +289,8 @@ export function FilterBar({ filterState, setFilterState, availableHosts, availab
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <span className="text-xs font-semibold text-primary bg-primary/10 px-2.5 py-1 rounded-full">
-                  {filterState.weeklyComparisonSelectedDates.length} semana{filterState.weeklyComparisonSelectedDates.length !== 1 ? 's' : ''}
+                  {filterState.weeklyComparisonSelectedDates.length} semana
+                  {filterState.weeklyComparisonSelectedDates.length !== 1 ? 's' : ''}
                 </span>
                 <div className="flex gap-1.5 ml-2">
                   <button
@@ -300,7 +304,9 @@ export function FilterBar({ filterState, setFilterState, availableHosts, availab
                   </button>
                   {filterState.weeklyComparisonSelectedDates.length > 0 && (
                     <button
-                      onClick={() => setFilterState((p) => ({ ...p, weeklyComparisonSelectedDates: [] }))}
+                      onClick={() =>
+                        setFilterState((p) => ({ ...p, weeklyComparisonSelectedDates: [] }))
+                      }
                       className="text-[10px] text-muted-foreground hover:text-red-400 px-2 py-0.5 rounded bg-secondary/40 hover:bg-secondary transition-colors"
                     >
                       Limpar
@@ -313,8 +319,17 @@ export function FilterBar({ filterState, setFilterState, availableHosts, availab
                   onClick={() => setShowOlderWeeks((v) => !v)}
                   className="text-[10px] font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
                 >
-                  {showOlderWeeks ? 'Ocultar anteriores' : `Ver anteriores (${availableWeekDates.length - VISIBLE_WEEKS})`}
-                  <span className={cn('transition-transform duration-200 text-[8px]', showOlderWeeks && 'rotate-180')}>▼</span>
+                  {showOlderWeeks
+                    ? 'Ocultar anteriores'
+                    : `Ver anteriores (${availableWeekDates.length - VISIBLE_WEEKS})`}
+                  <span
+                    className={cn(
+                      'transition-transform duration-200 text-[8px]',
+                      showOlderWeeks && 'rotate-180',
+                    )}
+                  >
+                    ▼
+                  </span>
                 </button>
               )}
             </div>
@@ -334,7 +349,10 @@ export function FilterBar({ filterState, setFilterState, availableHosts, availab
                         : 'bg-secondary/50 text-muted-foreground hover:bg-secondary hover:text-foreground',
                     )}
                   >
-                    <span className="inline-block w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: isSelected ? 'currentColor' : 'transparent' }} />
+                    <span
+                      className="inline-block w-1.5 h-1.5 rounded-full flex-shrink-0"
+                      style={{ backgroundColor: isSelected ? 'currentColor' : 'transparent' }}
+                    />
                     {date}
                     {isNewest && <span className="text-[9px] opacity-70">(Atual)</span>}
                   </button>

@@ -1,12 +1,5 @@
 import { useState } from 'react'
-import {
-  Area,
-  AreaChart,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  ResponsiveContainer,
-} from 'recharts'
+import { Area, AreaChart, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart'
 import { StreamData } from '@/types/stream'
@@ -57,11 +50,7 @@ function VariationBadge({ current, previous }: { current: number; previous: numb
         isPositive ? 'text-emerald-400' : 'text-red-400',
       )}
     >
-      {isPositive ? (
-        <TrendingUp className="w-3 h-3" />
-      ) : (
-        <TrendingDown className="w-3 h-3" />
-      )}
+      {isPositive ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
       {isPositive ? '+' : ''}
       {variation.toFixed(1)}%
     </span>
@@ -113,13 +102,7 @@ function ComparisonCard({
   )
 }
 
-function TrendChart({
-  data,
-  activeMetric,
-}: {
-  data: StreamData[]
-  activeMetric: MetricKey
-}) {
+function TrendChart({ data, activeMetric }: { data: StreamData[]; activeMetric: MetricKey }) {
   const chartData = [...data].reverse()
   const metricLabel = METRICS.find((m) => m.key === activeMetric)?.label || ''
 
@@ -230,7 +213,8 @@ export function WeeklyComparisonMultiCard({
                 Comparativo Semanal: {dayLabel}
               </CardTitle>
               <p className="text-xs text-muted-foreground mt-0.5">
-                {data.length} semana{data.length !== 1 ? 's' : ''} selecionada{data.length !== 1 ? 's' : ''}
+                {data.length} semana{data.length !== 1 ? 's' : ''} selecionada
+                {data.length !== 1 ? 's' : ''}
               </p>
             </div>
           </div>
@@ -249,7 +233,8 @@ export function WeeklyComparisonMultiCard({
           </div>
           {hasMoreWeeks && (
             <p className="text-[11px] text-muted-foreground text-center">
-              +{data.length - 2} semana{data.length - 2 !== 1 ? 's' : ''} no gráfico de tendência abaixo
+              +{data.length - 2} semana{data.length - 2 !== 1 ? 's' : ''} no gráfico de tendência
+              abaixo
             </p>
           )}
 

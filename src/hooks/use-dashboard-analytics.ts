@@ -22,11 +22,7 @@ export function useDashboardAnalytics(
   currentKpis: KPIData | null,
 ) {
   const comparisonPeriod = useMemo<ComparisonPeriodInfo | null>(() => {
-    if (
-      !filterState.comparisonEnabled ||
-      !filterState.dataInicio ||
-      !filterState.dataFim
-    )
+    if (!filterState.comparisonEnabled || !filterState.dataInicio || !filterState.dataFim)
       return null
 
     const fmt = (d: Date) => format(d, 'dd/MM')
@@ -39,12 +35,7 @@ export function useDashboardAnalytics(
   }, [filterState.comparisonEnabled, filterState.dataInicio, filterState.dataFim])
 
   const previousPeriodData = useMemo<StreamData[]>(() => {
-    if (
-      !filterState.comparisonEnabled ||
-      !filterState.dataInicio ||
-      !filterState.dataFim
-    )
-      return []
+    if (!filterState.comparisonEnabled || !filterState.dataInicio || !filterState.dataFim) return []
 
     const prevStart = subMonths(filterState.dataInicio, 1)
     const prevEnd = subMonths(filterState.dataFim, 1)
@@ -143,5 +134,13 @@ export function useDashboardAnalytics(
       .sort((a, b) => parseDateStr(b.date).getTime() - parseDateStr(a.date).getTime())
   }, [rawData, filterState])
 
-  return { kpiComparisons, comparisonPeriod, previousPeriodData, hostPerformance, weekdayEfficiency, weeklyComparisonData, availableWeekDates }
+  return {
+    kpiComparisons,
+    comparisonPeriod,
+    previousPeriodData,
+    hostPerformance,
+    weekdayEfficiency,
+    weeklyComparisonData,
+    availableWeekDates,
+  }
 }

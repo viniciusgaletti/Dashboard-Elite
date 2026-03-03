@@ -36,8 +36,15 @@ interface DashboardProps {
 export function Dashboard({ csvUrl, title, fullTitle, icon: Icon }: DashboardProps) {
   const { rawData, data, kpis, isLoading, error, filterState, setFilterState, availableHosts } =
     useStreamData(csvUrl)
-  const { kpiComparisons, comparisonPeriod, previousPeriodData, hostPerformance, weekdayEfficiency, weeklyComparisonData, availableWeekDates } =
-    useDashboardAnalytics(rawData, data, filterState, kpis)
+  const {
+    kpiComparisons,
+    comparisonPeriod,
+    previousPeriodData,
+    hostPerformance,
+    weekdayEfficiency,
+    weeklyComparisonData,
+    availableWeekDates,
+  } = useDashboardAnalytics(rawData, data, filterState, kpis)
 
   useEffect(() => {
     if (error) toast.error(error)
@@ -93,9 +100,14 @@ export function Dashboard({ csvUrl, title, fullTitle, icon: Icon }: DashboardPro
             <HostComparisonCard data={hostPerformance} />
           )}
 
-          {filterState.weeklyComparisonEnabled && filterState.weeklyComparisonDay !== 'all' && weeklyComparisonData.length > 0 && (
-            <WeeklyComparisonMultiCard data={weeklyComparisonData} selectedDay={filterState.weeklyComparisonDay} />
-          )}
+          {filterState.weeklyComparisonEnabled &&
+            filterState.weeklyComparisonDay !== 'all' &&
+            weeklyComparisonData.length > 0 && (
+              <WeeklyComparisonMultiCard
+                data={weeklyComparisonData}
+                selectedDay={filterState.weeklyComparisonDay}
+              />
+            )}
 
           <div
             className="grid gap-4 md:gap-5"
@@ -187,7 +199,11 @@ export function Dashboard({ csvUrl, title, fullTitle, icon: Icon }: DashboardPro
             <WeekdayEfficiencyChart data={weekdayEfficiency} />
           </div>
 
-          <ConversionAreaChart data={data} previousData={previousPeriodData} comparisonEnabled={filterState.comparisonEnabled} />
+          <ConversionAreaChart
+            data={data}
+            previousData={previousPeriodData}
+            comparisonEnabled={filterState.comparisonEnabled}
+          />
 
           <div className="space-y-4">
             <h3 className="text-headline text-xl font-semibold">Detalhamento por Dia</h3>
