@@ -5,11 +5,14 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { useAuth } from '@/hooks/use-auth'
 import { Button } from '@/components/ui/button'
 import { useSidebar } from '@/hooks/use-sidebar'
+import { NotificationsBell } from '@/components/NotificationsBell'
+import { useNotifications } from '@/contexts/notifications-context'
 
 export function Header() {
   const location = useLocation()
   const { user } = useAuth()
   const { isCollapsed, toggleSidebar } = useSidebar()
+  const { alertsRef } = useNotifications()
 
   const currentLink = NAV_LINKS.find((l) => l.path === location.pathname)
   const title = currentLink ? currentLink.name : 'Dashboard'
@@ -32,7 +35,8 @@ export function Header() {
         <h1 className="text-large-title transition-all duration-300">{title}</h1>
       </div>
 
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2">
+        <NotificationsBell alertsRef={alertsRef} />
         <Avatar className="md:hidden">
           <AvatarImage src={`https://img.usecurling.com/ppl/thumbnail?seed=${user?.id}`} />
           <AvatarFallback>{user?.email?.charAt(0).toUpperCase()}</AvatarFallback>

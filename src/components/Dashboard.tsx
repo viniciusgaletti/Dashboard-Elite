@@ -26,6 +26,7 @@ import { useStreamData } from '@/hooks/use-stream-data'
 import { useDashboardAnalytics } from '@/hooks/use-dashboard-analytics'
 import { formatCurrency, formatNumber, formatPercent } from '@/lib/data-utils'
 import { ExportButton } from '@/components/ExportButton'
+import { useNotifications } from '@/contexts/notifications-context'
 
 interface DashboardProps {
   csvUrl: string
@@ -52,6 +53,28 @@ export function Dashboard({ csvUrl, dashboardKey, title, fullTitle, icon: Icon }
   useEffect(() => {
     if (error) toast.error(error)
   }, [error])
+
+  // Performance notification checks
+  const { checkRevenueRecord, checkConversionRecord } = useNotifications()
+  useEffect(() => {
+    if (!kpis || data.length === 0) return
+    // Check for revenue record using the best live in the current filtered data
+    const bestRevenueLive = data.reduce((best, row) =>
+      row.revenue > best.revenue ? row : best, data[0]
+    )
+    if (bestRevenueLive) {
+      const alert = checkRevenueRecord(bestRevenueLive.revenue, bestRevenueLive.date)
+      if (alert) toast(alert.title, { description: alert.description })
+    }
+    // Check for conversion record
+    const bestConvLive = data.reduce((best, row) =>
+      row.conversion > best.conversion ? row : best, data[0]
+    )
+    if (bestConvLive) {
+      const alert = checkConversionRecord(bestConvLive.conversion, bestConvLive.date)
+      if (alert) toast(alert.title, { description: alert.description })
+    }
+  }, [kpis, data, checkRevenueRecord, checkConversionRecord])
 
   return (
     <main className="animate-fade-in-up container max-w-[1600px] w-full py-6 md:py-8 space-y-6 md:space-y-8 relative">

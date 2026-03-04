@@ -27,3 +27,11 @@ export interface Sale {
   notes: string
   created_at: string
 }
+
+export interface Seller {
+  id: string
+  user_id: string
+  name: string
+  active: boolean
+  created_at: string
+}
