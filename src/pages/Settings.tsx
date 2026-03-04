@@ -326,7 +326,8 @@ export default function Settings() {
                   <p className="font-medium text-label-primary">Equipe de Vendas</p>
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  Adicione ou desative vendedores. Vendedores inativos não aparecem no formulário de registro de vendas.
+                  Adicione ou desative vendedores. Vendedores inativos não aparecem no formulário de
+                  registro de vendas.
                 </p>
 
                 {/* Add new seller */}
@@ -335,7 +336,9 @@ export default function Settings() {
                     placeholder="Nome do novo vendedor"
                     value={newSellerName}
                     onChange={(e) => setNewSellerName(e.target.value)}
-                    onKeyDown={(e) => { if (e.key === 'Enter') handleAddSeller() }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') handleAddSeller()
+                    }}
                     className="flex-1"
                   />
                   <Button
@@ -352,13 +355,18 @@ export default function Settings() {
                 {/* Sellers list */}
                 <div className="divide-y divide-black/5 dark:divide-white/5 rounded-lg border border-black/5 dark:border-white/5 overflow-hidden">
                   {sellers.map((seller) => (
-                    <div key={seller.id} className="flex items-center justify-between px-4 py-3 hover:bg-secondary/30 transition-colors">
+                    <div
+                      key={seller.id}
+                      className="flex items-center justify-between px-4 py-3 hover:bg-secondary/30 transition-colors"
+                    >
                       <div className="flex items-center gap-3 min-w-0">
                         <Switch
                           checked={seller.active}
                           onCheckedChange={() => handleToggleSeller(seller.id, seller.active)}
                         />
-                        <span className={`text-sm font-medium truncate ${!seller.active ? 'text-muted-foreground line-through' : ''}`}>
+                        <span
+                          className={`text-sm font-medium truncate ${!seller.active ? 'text-muted-foreground line-through' : ''}`}
+                        >
                           {seller.name}
                         </span>
                       </div>
@@ -397,10 +405,7 @@ export default function Settings() {
                     Toque um som quando a meta mensal for batida ou um novo recorde for registrado.
                   </p>
                 </div>
-                <Switch
-                  checked={notifSound}
-                  onCheckedChange={handleToggleNotifSound}
-                />
+                <Switch checked={notifSound} onCheckedChange={handleToggleNotifSound} />
               </div>
             </CardContent>
           </Card>

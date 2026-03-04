@@ -59,16 +59,18 @@ export function Dashboard({ csvUrl, dashboardKey, title, fullTitle, icon: Icon }
   useEffect(() => {
     if (!kpis || data.length === 0) return
     // Check for revenue record using the best live in the current filtered data
-    const bestRevenueLive = data.reduce((best, row) =>
-      row.revenue > best.revenue ? row : best, data[0]
+    const bestRevenueLive = data.reduce(
+      (best, row) => (row.revenue > best.revenue ? row : best),
+      data[0],
     )
     if (bestRevenueLive) {
       const alert = checkRevenueRecord(bestRevenueLive.revenue, bestRevenueLive.date)
       if (alert) toast(alert.title, { description: alert.description })
     }
     // Check for conversion record
-    const bestConvLive = data.reduce((best, row) =>
-      row.conversion > best.conversion ? row : best, data[0]
+    const bestConvLive = data.reduce(
+      (best, row) => (row.conversion > best.conversion ? row : best),
+      data[0],
     )
     if (bestConvLive) {
       const alert = checkConversionRecord(bestConvLive.conversion, bestConvLive.date)
