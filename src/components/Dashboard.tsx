@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { toast } from 'sonner'
 import {
   FileSpreadsheet,
@@ -25,17 +25,20 @@ import { WeeklyComparisonMultiCard } from '@/components/WeeklyComparisonMultiCar
 import { useStreamData } from '@/hooks/use-stream-data'
 import { useDashboardAnalytics } from '@/hooks/use-dashboard-analytics'
 import { formatCurrency, formatNumber, formatPercent } from '@/lib/data-utils'
+import { ExportButton } from '@/components/ExportButton'
 
 interface DashboardProps {
   csvUrl: string
+  dashboardKey?: string
   title: string
   fullTitle: string
   icon: LucideIcon
 }
 
-export function Dashboard({ csvUrl, title, fullTitle, icon: Icon }: DashboardProps) {
+export function Dashboard({ csvUrl, dashboardKey, title, fullTitle, icon: Icon }: DashboardProps) {
+  const chartsRef = useRef<HTMLDivElement>(null)
   const { rawData, data, kpis, isLoading, error, filterState, setFilterState, availableHosts } =
-    useStreamData(csvUrl)
+    useStreamData(csvUrl, dashboardKey)
   const {
     kpiComparisons,
     comparisonPeriod,
@@ -64,6 +67,14 @@ export function Dashboard({ csvUrl, title, fullTitle, icon: Icon }: DashboardPro
             Monitore os resultados das suas transmissões e campanhas de {title.toLowerCase()}.
           </p>
         </div>
+        <ExportButton
+          title={fullTitle}
+          kpis={kpis}
+          data={data}
+          chartsRef={chartsRef}
+          filterState={filterState}
+          isLoading={isLoading}
+        />
       </div>
 
       <FilterBar
@@ -194,16 +205,18 @@ export function Dashboard({ csvUrl, title, fullTitle, icon: Icon }: DashboardPro
             />
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <HostPerformanceChart data={hostPerformance} />
-            <WeekdayEfficiencyChart data={weekdayEfficiency} />
-          </div>
+          <div ref={chartsRef} className="space-y-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <HostPerformanceChart data={hostPerformance} />
+              <WeekdayEfficiencyChart data={weekdayEfficiency} />
+            </div>
 
-          <ConversionAreaChart
-            data={data}
-            previousData={previousPeriodData}
-            comparisonEnabled={filterState.comparisonEnabled}
-          />
+            <ConversionAreaChart
+              data={data}
+              previousData={previousPeriodData}
+              comparisonEnabled={filterState.comparisonEnabled}
+            />
+          </div>
 
           <div className="space-y-4">
             <h3 className="text-headline text-xl font-semibold">Detalhamento por Dia</h3>

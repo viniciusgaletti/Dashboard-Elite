@@ -97,6 +97,7 @@ export type Database = {
           sale_date: string
           sale_value: number
           seller_name: string | null
+          unit_price: number
           user_id: string
         }
         Insert: {
@@ -108,6 +109,7 @@ export type Database = {
           sale_date?: string
           sale_value?: number
           seller_name?: string | null
+          unit_price?: number
           user_id: string
         }
         Update: {
@@ -119,7 +121,50 @@ export type Database = {
           sale_date?: string
           sale_value?: number
           seller_name?: string | null
+          unit_price?: number
           user_id?: string
+        }
+        Relationships: []
+      }
+      live_sessions: {
+        Row: {
+          id: string
+          dashboard_key: string
+          date: string
+          presenter: string
+          views: number
+          leads: number
+          conversion: number
+          revenue: number
+          sales: number
+          retention: number
+          synced_at: string
+        }
+        Insert: {
+          id?: string
+          dashboard_key: string
+          date: string
+          presenter?: string
+          views?: number
+          leads?: number
+          conversion?: number
+          revenue?: number
+          sales?: number
+          retention?: number
+          synced_at?: string
+        }
+        Update: {
+          id?: string
+          dashboard_key?: string
+          date?: string
+          presenter?: string
+          views?: number
+          leads?: number
+          conversion?: number
+          revenue?: number
+          sales?: number
+          retention?: number
+          synced_at?: string
         }
         Relationships: []
       }
@@ -387,3 +432,28 @@ export const Constants = {
 //   CREATE UNIQUE INDEX monthly_goals_user_id_month_year_key ON public.monthly_goals USING btree (user_id, month, year)
 // Table: products
 //   CREATE UNIQUE INDEX products_user_id_name_key ON public.products USING btree (user_id, name)
+// Table: live_sessions
+//   CREATE UNIQUE INDEX live_sessions_unique_session ON public.live_sessions USING btree (dashboard_key, date, presenter)
+//   CREATE INDEX live_sessions_dashboard_key_idx ON public.live_sessions USING btree (dashboard_key)
+
+// Table: live_sessions
+//   id: uuid (not null, default: gen_random_uuid())
+//   dashboard_key: text (not null)
+//   date: text (not null) — format 'DD/MM/YYYY'
+//   presenter: text (not null, default: 'Desconhecido')
+//   views: numeric (not null, default: 0)
+//   leads: numeric (not null, default: 0)
+//   conversion: numeric (not null, default: 0)
+//   revenue: numeric (not null, default: 0)
+//   sales: numeric (not null, default: 0)
+//   retention: numeric (not null, default: 0)
+//   synced_at: timestamp with time zone (not null, default: now())
+//
+// Constraints:
+//   PRIMARY KEY live_sessions_pkey: PRIMARY KEY (id)
+//   UNIQUE live_sessions_unique_session: UNIQUE (dashboard_key, date, presenter)
+//
+// RLS Policies:
+//   Policy "Authenticated users can read live sessions" (SELECT) USING: auth.role() = 'authenticated'
+//   Policy "Anon can insert live sessions" (INSERT) WITH CHECK: auth.role() = 'anon'
+//   Policy "Anon can update live sessions" (UPDATE) USING: auth.role() = 'anon'
