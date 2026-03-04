@@ -72,25 +72,17 @@ export const useRevenue = (): UseRevenueReturn => {
   useEffect(() => {
     const channel = supabase
       .channel('sales-realtime')
-      .on(
-        'postgres_changes',
-        { event: 'INSERT', schema: 'public', table: 'sales' },
-        (payload) => {
-          const newSale = payload.new as Sale
-          setSales((prev) => {
-            if (prev.some((s) => s.id === newSale.id)) return prev
-            return [newSale, ...prev]
-          })
-        },
-      )
-      .on(
-        'postgres_changes',
-        { event: 'DELETE', schema: 'public', table: 'sales' },
-        (payload) => {
-          const deletedId = (payload.old as { id: string }).id
-          setSales((prev) => prev.filter((s) => s.id !== deletedId))
-        },
-      )
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'sales' }, (payload) => {
+        const newSale = payload.new as Sale
+        setSales((prev) => {
+          if (prev.some((s) => s.id === newSale.id)) return prev
+          return [newSale, ...prev]
+        })
+      })
+      .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'sales' }, (payload) => {
+        const deletedId = (payload.old as { id: string }).id
+        setSales((prev) => prev.filter((s) => s.id !== deletedId))
+      })
       .subscribe()
 
     return () => {

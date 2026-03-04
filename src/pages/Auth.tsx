@@ -62,9 +62,7 @@ export default function Auth() {
           {/* Heading */}
           <div className="space-y-2">
             <h1 className="text-3xl font-bold tracking-tight">Bem-vindo de volta</h1>
-            <p className="text-muted-foreground">
-              Insira suas credenciais para acessar o painel.
-            </p>
+            <p className="text-muted-foreground">Insira suas credenciais para acessar o painel.</p>
           </div>
 
           {/* Form */}
@@ -120,9 +118,11 @@ export default function Auth() {
       <div className="hidden lg:flex flex-1 relative overflow-hidden bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700">
         {/* Background pattern */}
         <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-0 left-0 w-full h-full"
+          <div
+            className="absolute top-0 left-0 w-full h-full"
             style={{
-              backgroundImage: 'radial-gradient(circle at 25% 25%, white 1px, transparent 1px), radial-gradient(circle at 75% 75%, white 1px, transparent 1px)',
+              backgroundImage:
+                'radial-gradient(circle at 25% 25%, white 1px, transparent 1px), radial-gradient(circle at 75% 75%, white 1px, transparent 1px)',
               backgroundSize: '50px 50px',
             }}
           />
@@ -134,7 +134,8 @@ export default function Auth() {
             Gerencie seus resultados com inteligência.
           </h2>
           <p className="text-white/70 text-lg mb-12">
-            Acompanhe métricas, vendas e metas em tempo real para tomar decisões mais rápidas e assertivas.
+            Acompanhe métricas, vendas e metas em tempo real para tomar decisões mais rápidas e
+            assertivas.
           </p>
 
           {/* Feature cards */}

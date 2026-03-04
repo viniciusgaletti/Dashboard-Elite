@@ -93,9 +93,9 @@ export default function Settings() {
       if (uploadError) throw uploadError
 
       // Get public URL
-      const { data: { publicUrl } } = supabase.storage
-        .from('avatars')
-        .getPublicUrl(filePath)
+      const {
+        data: { publicUrl },
+      } = supabase.storage.from('avatars').getPublicUrl(filePath)
 
       const urlWithTimestamp = `${publicUrl}?t=${Date.now()}`
 
@@ -109,7 +109,9 @@ export default function Settings() {
       setAvatarUrl(urlWithTimestamp)
       toast.success('Foto atualizada com sucesso!')
     } catch {
-      toast.error('Erro ao atualizar foto. Verifique se o bucket "avatars" existe no Supabase Storage.')
+      toast.error(
+        'Erro ao atualizar foto. Verifique se o bucket "avatars" existe no Supabase Storage.',
+      )
     } finally {
       setIsUploadingAvatar(false)
     }

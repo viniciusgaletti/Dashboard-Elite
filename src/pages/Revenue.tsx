@@ -87,7 +87,9 @@ export default function Revenue() {
   const [newProductName, setNewProductName] = useState('')
   const [newProductPrice, setNewProductPrice] = useState('')
   const [showAddProduct, setShowAddProduct] = useState(false)
-  const [productSortMode, setProductSortMode] = useState<'price-asc' | 'price-desc' | 'units-asc' | 'units-desc'>('price-desc')
+  const [productSortMode, setProductSortMode] = useState<
+    'price-asc' | 'price-desc' | 'units-asc' | 'units-desc'
+  >('price-desc')
   const [isEditingGoal, setIsEditingGoal] = useState(false)
   const [editGoalValue, setEditGoalValue] = useState('')
 
@@ -284,28 +286,46 @@ export default function Revenue() {
   const cycleSortMode = () => {
     setProductSortMode((prev) => {
       switch (prev) {
-        case 'price-desc': return 'price-asc'
-        case 'price-asc': return 'units-asc'
-        case 'units-asc': return 'units-desc'
-        case 'units-desc': return 'price-desc'
+        case 'price-desc':
+          return 'price-asc'
+        case 'price-asc':
+          return 'units-asc'
+        case 'units-asc':
+          return 'units-desc'
+        case 'units-desc':
+          return 'price-desc'
       }
     })
   }
 
   const sortLabel = (() => {
     switch (productSortMode) {
-      case 'price-desc': return 'Maior preço'
-      case 'price-asc': return 'Menor preço'
-      case 'units-asc': return 'Menor qtd'
-      case 'units-desc': return 'Maior qtd'
+      case 'price-desc':
+        return 'Maior preço'
+      case 'price-asc':
+        return 'Menor preço'
+      case 'units-asc':
+        return 'Menor qtd'
+      case 'units-desc':
+        return 'Maior qtd'
     }
   })()
 
   const formTotal = (parseInt(formQty) || 0) * (parseFloat(formUnitPrice.replace(',', '.')) || 0)
 
   const MONTHS = [
-    'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
-    'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro',
+    'Janeiro',
+    'Fevereiro',
+    'Março',
+    'Abril',
+    'Maio',
+    'Junho',
+    'Julho',
+    'Agosto',
+    'Setembro',
+    'Outubro',
+    'Novembro',
+    'Dezembro',
   ]
 
   return (
@@ -343,10 +363,7 @@ export default function Revenue() {
             ))}
           </SelectContent>
         </Select>
-        <Select
-          value={selectedYear.toString()}
-          onValueChange={(v) => setSelectedYear(parseInt(v))}
-        >
+        <Select value={selectedYear.toString()} onValueChange={(v) => setSelectedYear(parseInt(v))}>
           <SelectTrigger className="w-[100px]">
             <SelectValue />
           </SelectTrigger>
@@ -401,7 +418,9 @@ export default function Revenue() {
                     onChange={(e) => setEditGoalValue(e.target.value)}
                     onKeyDown={async (e) => {
                       if (e.key === 'Enter') {
-                        const val = parseFloat(editGoalValue.replace(/[^\d.,]/g, '').replace(',', '.'))
+                        const val = parseFloat(
+                          editGoalValue.replace(/[^\d.,]/g, '').replace(',', '.'),
+                        )
                         if (!isNaN(val) && val > 0) {
                           await handleGoalSave(selectedMonth, selectedYear, val)
                           setIsEditingGoal(false)
@@ -417,7 +436,9 @@ export default function Revenue() {
                     size="icon"
                     className="h-8 w-8"
                     onClick={async () => {
-                      const val = parseFloat(editGoalValue.replace(/[^\d.,]/g, '').replace(',', '.'))
+                      const val = parseFloat(
+                        editGoalValue.replace(/[^\d.,]/g, '').replace(',', '.'),
+                      )
                       if (!isNaN(val) && val > 0) {
                         await handleGoalSave(selectedMonth, selectedYear, val)
                         setIsEditingGoal(false)
@@ -484,7 +505,8 @@ export default function Revenue() {
                 </button>
                 {gap > 0 && (
                   <span className="text-xs">
-                    Gap: <span className="text-orange-500 font-semibold">{formatCurrency(gap)}</span>
+                    Gap:{' '}
+                    <span className="text-orange-500 font-semibold">{formatCurrency(gap)}</span>
                   </span>
                 )}
                 <Button
@@ -545,7 +567,12 @@ export default function Revenue() {
                           }}
                           autoFocus
                         />
-                        <Button size="sm" variant="ghost" className="h-7 px-2 text-xs" onClick={() => handleSaveProductPrice(p.id)}>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="h-7 px-2 text-xs"
+                          onClick={() => handleSaveProductPrice(p.id)}
+                        >
                           ✓
                         </Button>
                       </div>
@@ -554,9 +581,7 @@ export default function Revenue() {
                         <span className="text-sm text-muted-foreground">
                           {formatCurrency(p.price)}
                         </span>
-                        <span className="text-sm font-bold text-primary">
-                          {p.unitsNeeded} un.
-                        </span>
+                        <span className="text-sm font-bold text-primary">{p.unitsNeeded} un.</span>
                         <Button
                           variant="ghost"
                           size="icon"
@@ -611,20 +636,23 @@ export default function Revenue() {
                 >
                   <div className="flex items-center gap-3 min-w-0">
                     <div
-                      className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${i === 0
-                        ? 'bg-yellow-500/20 text-yellow-500'
-                        : i === 1
-                          ? 'bg-slate-400/20 text-slate-400'
-                          : i === 2
-                            ? 'bg-orange-600/20 text-orange-600'
-                            : 'bg-secondary text-muted-foreground'
-                        }`}
+                      className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${
+                        i === 0
+                          ? 'bg-yellow-500/20 text-yellow-500'
+                          : i === 1
+                            ? 'bg-slate-400/20 text-slate-400'
+                            : i === 2
+                              ? 'bg-orange-600/20 text-orange-600'
+                              : 'bg-secondary text-muted-foreground'
+                      }`}
                     >
                       {i + 1}º
                     </div>
                     <div className="min-w-0">
                       <p className="font-medium text-sm truncate">{seller.name}</p>
-                      <p className="text-xs text-muted-foreground">{seller.salesCount} venda{seller.salesCount !== 1 ? 's' : ''}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {seller.salesCount} venda{seller.salesCount !== 1 ? 's' : ''}
+                      </p>
                     </div>
                   </div>
                   <p className="font-bold text-success shrink-0">{formatCurrency(seller.total)}</p>
@@ -716,11 +744,7 @@ export default function Revenue() {
             {/* Data */}
             <div className="space-y-1.5">
               <Label className="text-xs text-muted-foreground">Data</Label>
-              <Input
-                type="date"
-                value={formDate}
-                onChange={(e) => setFormDate(e.target.value)}
-              />
+              <Input type="date" value={formDate} onChange={(e) => setFormDate(e.target.value)} />
             </div>
 
             {/* Observação */}
@@ -743,11 +767,7 @@ export default function Revenue() {
 
             {/* Submit button */}
             <div className="space-y-1.5 flex items-end">
-              <Button
-                className="w-full"
-                onClick={handleSubmitSale}
-                disabled={isSubmitting}
-              >
+              <Button className="w-full" onClick={handleSubmitSale} disabled={isSubmitting}>
                 {isSubmitting ? 'Registrando...' : 'Adicionar Venda'}
               </Button>
             </div>
@@ -765,11 +785,7 @@ export default function Revenue() {
             Vendas Registradas ({monthSales.length})
           </h3>
         </div>
-        <SalesTable
-          sales={monthSales}
-          isLoading={isLoadingSales}
-          onDeleteSale={handleDeleteSale}
-        />
+        <SalesTable sales={monthSales} isLoading={isLoadingSales} onDeleteSale={handleDeleteSale} />
       </div>
 
       {/* Goal Dialog */}

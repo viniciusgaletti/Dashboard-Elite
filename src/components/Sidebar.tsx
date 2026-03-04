@@ -43,7 +43,9 @@ export function Sidebar({ className }: { className?: string }) {
       )
       .subscribe()
 
-    return () => { supabase.removeChannel(channel) }
+    return () => {
+      supabase.removeChannel(channel)
+    }
   }, [user])
 
   const displayAvatarUrl = avatarUrl || `https://img.usecurling.com/ppl/thumbnail?seed=${user?.id}`
@@ -178,4 +180,3 @@ export function Sidebar({ className }: { className?: string }) {
     </TooltipProvider>
   )
 }
-

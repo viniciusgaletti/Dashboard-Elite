@@ -22,9 +22,7 @@ export const useGoals = (): UseGoalsReturn => {
   const fetchGoals = useCallback(async () => {
     setIsLoading(true)
     try {
-      const { data, error } = await supabase
-        .from('monthly_goals')
-        .select('*')
+      const { data, error } = await supabase.from('monthly_goals').select('*')
 
       if (error) throw error
       setGoals((data as MonthlyGoal[]) || [])
@@ -77,7 +75,10 @@ export const useGoals = (): UseGoalsReturn => {
         .eq('year', year)
         .select()
 
-      if (updateError) { console.error('Goal update error:', updateError); throw updateError }
+      if (updateError) {
+        console.error('Goal update error:', updateError)
+        throw updateError
+      }
 
       if (updated && updated.length > 0) {
         // Update succeeded
@@ -97,7 +98,10 @@ export const useGoals = (): UseGoalsReturn => {
         .select()
         .single()
 
-      if (insertError) { console.error('Goal insert error:', insertError); throw insertError }
+      if (insertError) {
+        console.error('Goal insert error:', insertError)
+        throw insertError
+      }
       const goal = inserted as MonthlyGoal
       setGoals((prev) => [...prev, goal])
       return { data: goal, error: null }
