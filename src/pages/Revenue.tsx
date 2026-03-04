@@ -31,20 +31,11 @@ import { GoalDialog } from '@/components/GoalDialog'
 import { useGoals } from '@/hooks/use-goals'
 import { useRevenue } from '@/hooks/use-revenue'
 import { useLiveRevenue } from '@/hooks/use-live-revenue'
+import { useSellers } from '@/hooks/use-sellers'
+import { useNotifications } from '@/contexts/notifications-context'
 import { DASHBOARDS } from '@/config/dashboards'
 
-const SELLERS = [
-  'Felipe Garcia',
-  'Felipe Navaar',
-  'Ian Ede',
-  'Kimberly Prestes',
-  'Lucas Dias',
-  'Lucas Machado',
-  'Lucas Richard',
-  'Rodrigo Santos',
-  'Vinicius Galetti',
-  'Outro',
-]
+// Sellers are now fetched dynamically from the database
 
 const formatCurrency = (val: number) =>
   new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val)
@@ -63,6 +54,8 @@ export default function Revenue() {
     updateProduct,
     deleteProduct,
   } = useRevenue()
+
+  const { activeSellers } = useSellers()
 
   // Live revenue from CSVs (onboarding + leads)
   const { data: onboardingRevenue } = useLiveRevenue(DASHBOARDS.onboarding.csvUrl)
@@ -153,6 +146,15 @@ export default function Revenue() {
   const realizedTotal = liveRevenueTotal + manualSalesTotal
   const gap = Math.max(targetValue - realizedTotal, 0)
   const progress = targetValue > 0 ? Math.min((realizedTotal / targetValue) * 100, 100) : 0
+
+  // Goal-reached notification
+  const { checkGoalReached } = useNotifications()
+  useEffect(() => {
+    if (targetValue > 0 && realizedTotal > 0) {
+      const alert = checkGoalReached(realizedTotal, targetValue)
+      if (alert) toast(alert.title, { description: alert.description })
+    }
+  }, [realizedTotal, targetValue, checkGoalReached])
 
   // Seller ranking based on monthly sales (manual only)
   const sellerRanking = useMemo(() => {
@@ -730,9 +732,9 @@ export default function Revenue() {
                   <SelectValue placeholder="Selecione..." />
                 </SelectTrigger>
                 <SelectContent>
-                  {SELLERS.map((s) => (
-                    <SelectItem key={s} value={s}>
-                      {s}
+                  {activeSellers.map((s) => (
+                    <SelectItem key={s.id} value={s.name}>
+                      {s.name}
                     </SelectItem>
                   ))}
                 </SelectContent>

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
-import { LogOut, Moon, Sun, Monitor, Camera } from 'lucide-react'
+import { LogOut, Moon, Sun, Monitor, Camera, Users, Plus, Trash2 } from 'lucide-react'
 import { useTheme } from 'next-themes'
 
 import { Card, CardContent } from '@/components/ui/card'
@@ -9,7 +9,9 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Switch } from '@/components/ui/switch'
 import { useAuth } from '@/hooks/use-auth'
+import { useSellers } from '@/hooks/use-sellers'
 import { getProfile, updateProfile } from '@/services/profiles'
 import { supabase } from '@/lib/supabase/client'
 
@@ -24,6 +26,44 @@ export default function Settings() {
   const [isLoading, setIsLoading] = useState(false)
   const [isFetching, setIsFetching] = useState(true)
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false)
+
+  // Sellers management
+  const { sellers, insertSeller, updateSeller, deleteSeller } = useSellers()
+  const [newSellerName, setNewSellerName] = useState('')
+  const [isAddingSeller, setIsAddingSeller] = useState(false)
+
+  // Notification preferences
+  const [notifSound, setNotifSound] = useState(() => {
+    return localStorage.getItem('dashboard-notif-sound') !== 'off'
+  })
+
+  const handleToggleNotifSound = (checked: boolean) => {
+    setNotifSound(checked)
+    localStorage.setItem('dashboard-notif-sound', checked ? 'on' : 'off')
+  }
+
+  const handleAddSeller = async () => {
+    if (!newSellerName.trim()) return
+    setIsAddingSeller(true)
+    const { error } = await insertSeller(newSellerName)
+    setIsAddingSeller(false)
+    if (error) toast.error(error)
+    else {
+      toast.success('Vendedor adicionado!')
+      setNewSellerName('')
+    }
+  }
+
+  const handleToggleSeller = async (id: string, active: boolean) => {
+    const { error } = await updateSeller(id, { active: !active })
+    if (error) toast.error(error)
+  }
+
+  const handleDeleteSeller = async (id: string) => {
+    const { error } = await deleteSeller(id)
+    if (error) toast.error(error)
+    else toast.success('Vendedor removido.')
+  }
 
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -268,6 +308,99 @@ export default function Settings() {
                     Sistema
                   </Button>
                 </div>
+              </div>
+            </CardContent>
+          </Card>
+        </section>
+
+        {/* Sellers Management */}
+        <section>
+          <h3 className="text-headline mb-3 px-1 text-label-secondary uppercase text-sm tracking-wider">
+            Gestão de Vendedores
+          </h3>
+          <Card className="glass-panel border-0 overflow-hidden">
+            <CardContent className="p-0">
+              <div className="p-4 sm:p-6 space-y-4">
+                <div className="flex items-center gap-2">
+                  <Users className="w-5 h-5 text-muted-foreground" />
+                  <p className="font-medium text-label-primary">Equipe de Vendas</p>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Adicione ou desative vendedores. Vendedores inativos não aparecem no formulário de registro de vendas.
+                </p>
+
+                {/* Add new seller */}
+                <div className="flex gap-2">
+                  <Input
+                    placeholder="Nome do novo vendedor"
+                    value={newSellerName}
+                    onChange={(e) => setNewSellerName(e.target.value)}
+                    onKeyDown={(e) => { if (e.key === 'Enter') handleAddSeller() }}
+                    className="flex-1"
+                  />
+                  <Button
+                    size="sm"
+                    onClick={handleAddSeller}
+                    disabled={isAddingSeller || !newSellerName.trim()}
+                    className="gap-1.5"
+                  >
+                    <Plus className="w-4 h-4" />
+                    Adicionar
+                  </Button>
+                </div>
+
+                {/* Sellers list */}
+                <div className="divide-y divide-black/5 dark:divide-white/5 rounded-lg border border-black/5 dark:border-white/5 overflow-hidden">
+                  {sellers.map((seller) => (
+                    <div key={seller.id} className="flex items-center justify-between px-4 py-3 hover:bg-secondary/30 transition-colors">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <Switch
+                          checked={seller.active}
+                          onCheckedChange={() => handleToggleSeller(seller.id, seller.active)}
+                        />
+                        <span className={`text-sm font-medium truncate ${!seller.active ? 'text-muted-foreground line-through' : ''}`}>
+                          {seller.name}
+                        </span>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 text-muted-foreground hover:text-destructive shrink-0"
+                        onClick={() => handleDeleteSeller(seller.id)}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  ))}
+                  {sellers.length === 0 && (
+                    <p className="text-center text-sm text-muted-foreground py-6">
+                      Nenhum vendedor cadastrado.
+                    </p>
+                  )}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </section>
+
+        {/* Notifications */}
+        <section>
+          <h3 className="text-headline mb-3 px-1 text-label-secondary uppercase text-sm tracking-wider">
+            Notificações
+          </h3>
+          <Card className="glass-panel border-0 overflow-hidden">
+            <CardContent className="p-0">
+              <div className="p-4 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <p className="font-medium text-label-primary">Som de Alerta</p>
+                  <p className="text-sm text-muted-foreground max-w-md mt-1">
+                    Toque um som quando a meta mensal for batida ou um novo recorde for registrado.
+                  </p>
+                </div>
+                <Switch
+                  checked={notifSound}
+                  onCheckedChange={handleToggleNotifSound}
+                />
               </div>
             </CardContent>
           </Card>
