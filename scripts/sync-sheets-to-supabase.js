@@ -24,14 +24,14 @@ var DASHBOARD_KEY = 'onboarding'
 
 // Aliases das colunas — devem bater com os nomes na planilha (sem acento, minúsculas)
 var COLUMN_ALIASES = {
-  date:       ['data'],
-  views:      ['pico', 'pico de pessoas', 'audiencia', 'max'],
-  leads:      ['leads', 'cadastros'],
+  date: ['data'],
+  views: ['pico', 'pico de pessoas', 'audiencia', 'max'],
+  leads: ['leads', 'cadastros'],
   conversion: ['conversao', 'tx conversao', 'taxa de conversao'],
-  revenue:    ['receita', 'faturamento', 'valor', 'faturamento total'],
-  sales:      ['vendas', 'qtdvendas', 'qtd vendas', 'quantidade', 'numero de vendas'],
-  presenter:  ['apresentador', 'host', 'nome'],
-  retention:  ['retencao', 'tx retencao', 'taxa de retencao'],
+  revenue: ['receita', 'faturamento', 'valor', 'faturamento total'],
+  sales: ['vendas', 'qtdvendas', 'qtd vendas', 'quantidade', 'numero de vendas'],
+  presenter: ['apresentador', 'host', 'nome'],
+  retention: ['retencao', 'tx retencao', 'taxa de retencao'],
 }
 
 // ── Utilitários (mesma lógica do React) ───────────────────────────────────
@@ -46,7 +46,10 @@ function normalizeKey(key) {
 function cleanNumeric(val) {
   if (typeof val !== 'string') val = String(val)
   if (val.includes('#')) return '0'
-  var clean = val.replace(/R\$\s?/g, '').replace('%', '').trim()
+  var clean = val
+    .replace(/R\$\s?/g, '')
+    .replace('%', '')
+    .trim()
   if (clean.includes('.') && clean.includes(',')) {
     clean =
       clean.lastIndexOf(',') > clean.lastIndexOf('.')
@@ -84,23 +87,25 @@ function syncToSupabase() {
     return
   }
 
-  var headers = values[0].map(function(h) { return normalizeKey(String(h)) })
+  var headers = values[0].map(function (h) {
+    return normalizeKey(String(h))
+  })
 
   var rows = []
   for (var i = 1; i < values.length; i++) {
     var rowObj = {}
-    headers.forEach(function(h, idx) {
+    headers.forEach(function (h, idx) {
       rowObj[h] = values[i][idx] !== undefined ? String(values[i][idx]).trim() : ''
     })
 
-    var date       = getVal(rowObj, COLUMN_ALIASES.date)
-    var presenter  = getVal(rowObj, COLUMN_ALIASES.presenter) || 'Desconhecido'
-    var views      = parseNumber(getVal(rowObj, COLUMN_ALIASES.views))
-    var leads      = parseNumber(getVal(rowObj, COLUMN_ALIASES.leads))
+    var date = getVal(rowObj, COLUMN_ALIASES.date)
+    var presenter = getVal(rowObj, COLUMN_ALIASES.presenter) || 'Desconhecido'
+    var views = parseNumber(getVal(rowObj, COLUMN_ALIASES.views))
+    var leads = parseNumber(getVal(rowObj, COLUMN_ALIASES.leads))
     var conversion = parseNumber(getVal(rowObj, COLUMN_ALIASES.conversion))
-    var revenue    = parseNumber(getVal(rowObj, COLUMN_ALIASES.revenue))
-    var sales      = parseNumber(getVal(rowObj, COLUMN_ALIASES.sales))
-    var retention  = parseNumber(getVal(rowObj, COLUMN_ALIASES.retention))
+    var revenue = parseNumber(getVal(rowObj, COLUMN_ALIASES.revenue))
+    var sales = parseNumber(getVal(rowObj, COLUMN_ALIASES.sales))
+    var retention = parseNumber(getVal(rowObj, COLUMN_ALIASES.retention))
 
     if (views === 0 && leads === 0 && revenue === 0 && sales === 0) continue
     if (!date) continue
@@ -138,9 +143,9 @@ function syncToSupabase() {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'apikey': SUPABASE_ANON_KEY,
-      'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
-      'Prefer': 'resolution=merge-duplicates',
+      apikey: SUPABASE_ANON_KEY,
+      Authorization: 'Bearer ' + SUPABASE_ANON_KEY,
+      Prefer: 'resolution=merge-duplicates',
     },
     payload: JSON.stringify(uniqueRows),
     muteHttpExceptions: true,
@@ -176,9 +181,9 @@ function testSingleRow() {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'apikey': SUPABASE_ANON_KEY,
-      'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
-      'Prefer': 'resolution=merge-duplicates',
+      apikey: SUPABASE_ANON_KEY,
+      Authorization: 'Bearer ' + SUPABASE_ANON_KEY,
+      Prefer: 'resolution=merge-duplicates',
     },
     payload: JSON.stringify([testRow]),
     muteHttpExceptions: true,

@@ -10,31 +10,37 @@ import { supabase } from '@/lib/supabase/client'
 const PAGE_W = 210
 const PAGE_H = 297
 const MARGIN = 15
-const CONTENT_W = PAGE_W - MARGIN * 2  // 180mm
+const CONTENT_W = PAGE_W - MARGIN * 2 // 180mm
 
 // ─── Brand palette [r, g, b] ──────────────────────────────────────────────────
 const C = {
-  bg:        [15, 15, 15]    as const,
-  card:      [26, 26, 26]    as const,
-  border:    [42, 42, 42]    as const,
-  gold:      [217, 185, 121] as const,
-  white:     [255, 255, 255] as const,
-  muted:     [136, 136, 136] as const,
-  rowEven:   [20, 20, 20]    as const,
-  rowOdd:    [26, 26, 26]    as const,
-  tableHead: [30, 26, 16]    as const,
-  success:   [34, 197, 94]   as const,
-  indigo:    [99, 102, 241]  as const,
-  orange:    [249, 115, 22]  as const,
-  yellow:    [234, 179, 8]   as const,
+  bg: [15, 15, 15] as const,
+  card: [26, 26, 26] as const,
+  border: [42, 42, 42] as const,
+  gold: [217, 185, 121] as const,
+  white: [255, 255, 255] as const,
+  muted: [136, 136, 136] as const,
+  rowEven: [20, 20, 20] as const,
+  rowOdd: [26, 26, 26] as const,
+  tableHead: [30, 26, 16] as const,
+  success: [34, 197, 94] as const,
+  indigo: [99, 102, 241] as const,
+  orange: [249, 115, 22] as const,
+  yellow: [234, 179, 8] as const,
 }
 
 type RGB = readonly [number, number, number]
 
 // ─── Primitive helpers ────────────────────────────────────────────────────────
-function fill(doc: jsPDF, c: RGB) { doc.setFillColor(c[0], c[1], c[2]) }
-function draw(doc: jsPDF, c: RGB) { doc.setDrawColor(c[0], c[1], c[2]) }
-function color(doc: jsPDF, c: RGB) { doc.setTextColor(c[0], c[1], c[2]) }
+function fill(doc: jsPDF, c: RGB) {
+  doc.setFillColor(c[0], c[1], c[2])
+}
+function draw(doc: jsPDF, c: RGB) {
+  doc.setDrawColor(c[0], c[1], c[2])
+}
+function color(doc: jsPDF, c: RGB) {
+  doc.setTextColor(c[0], c[1], c[2])
+}
 
 function fillPage(doc: jsPDF) {
   fill(doc, C.bg)
@@ -97,14 +103,18 @@ function drawKPIs(doc: jsPDF, kpis: KPIData, startY: number): number {
     subtitle?: string
     accent: RGB
   }> = [
-    { label: 'Faturamento Total',   value: formatCurrency(kpis.faturamentoTotal),    accent: C.success },
-    { label: 'Total de Vendas',     value: formatNumber(kpis.totalVendas),            accent: C.indigo },
-    { label: 'Fat. Médio por Live', value: formatCurrency(kpis.faturamentoPorLive),   accent: C.success },
-    { label: 'Conversão Média',     value: formatPercent(kpis.conversaoMedia),        accent: C.orange },
-    { label: 'Melhor Dia',          value: kpis.melhorDia,                            accent: C.gold },
-    { label: 'Total de Lives',      value: formatNumber(kpis.totalLives),             accent: C.indigo },
-    { label: 'Média Vendas/Live',   value: formatNumber(kpis.mediaVendasPorLive),     accent: C.indigo },
-    { label: 'Retenção Média',      value: formatPercent(kpis.retencaoMedia),         accent: C.gold },
+    { label: 'Faturamento Total', value: formatCurrency(kpis.faturamentoTotal), accent: C.success },
+    { label: 'Total de Vendas', value: formatNumber(kpis.totalVendas), accent: C.indigo },
+    {
+      label: 'Fat. Médio por Live',
+      value: formatCurrency(kpis.faturamentoPorLive),
+      accent: C.success,
+    },
+    { label: 'Conversão Média', value: formatPercent(kpis.conversaoMedia), accent: C.orange },
+    { label: 'Melhor Dia', value: kpis.melhorDia, accent: C.gold },
+    { label: 'Total de Lives', value: formatNumber(kpis.totalLives), accent: C.indigo },
+    { label: 'Média Vendas/Live', value: formatNumber(kpis.mediaVendasPorLive), accent: C.indigo },
+    { label: 'Retenção Média', value: formatPercent(kpis.retencaoMedia), accent: C.gold },
     {
       label: 'Recorde Vendas',
       value: formatNumber(kpis.recordeVendas),
@@ -166,9 +176,10 @@ function drawKPIs(doc: jsPDF, kpis: KPIData, startY: number): number {
       const sub = items[i].subtitle!
       // Truncate if too wide
       const maxW = CARD_W - 10
-      const truncated = doc.getTextWidth(sub) > maxW
-        ? sub.substring(0, Math.floor(sub.length * maxW / doc.getTextWidth(sub))) + '…'
-        : sub
+      const truncated =
+        doc.getTextWidth(sub) > maxW
+          ? sub.substring(0, Math.floor((sub.length * maxW) / doc.getTextWidth(sub))) + '…'
+          : sub
       doc.text(truncated, x + 7, cardY + 25)
     }
   }
@@ -180,14 +191,14 @@ function drawKPIs(doc: jsPDF, kpis: KPIData, startY: number): number {
 // ─── Data table ───────────────────────────────────────────────────────────────
 function drawTable(doc: jsPDF, data: StreamData[], startY: number): void {
   const cols = [
-    { header: 'Data',         w: 22 },
+    { header: 'Data', w: 22 },
     { header: 'Apresentador', w: 36 },
-    { header: 'Pico',         w: 18 },
-    { header: 'Leads',        w: 18 },
-    { header: 'Retenção',     w: 20 },
-    { header: 'Vendas',       w: 18 },
-    { header: 'Conversão',    w: 22 },
-    { header: 'Receita',      w: 26 },
+    { header: 'Pico', w: 18 },
+    { header: 'Leads', w: 18 },
+    { header: 'Retenção', w: 20 },
+    { header: 'Vendas', w: 18 },
+    { header: 'Conversão', w: 22 },
+    { header: 'Receita', w: 26 },
   ]
   // Total: 22+36+18+18+20+18+22+26 = 180 ✓
 
@@ -249,9 +260,8 @@ function drawTable(doc: jsPDF, data: StreamData[], startY: number): void {
       const val = values[j]
       const maxW = cols[j].w - 4
       const tw = doc.getTextWidth(val)
-      const truncated = tw > maxW
-        ? val.substring(0, Math.floor(val.length * maxW / tw)) + '…'
-        : val
+      const truncated =
+        tw > maxW ? val.substring(0, Math.floor((val.length * maxW) / tw)) + '…' : val
       doc.text(truncated, x + 2, y + 4.6)
       x += cols[j].w
     }
@@ -350,8 +360,16 @@ export async function exportDashboardPDF({
 // ─── Public: export consolidated PDF ─────────────────────────────────────────
 export async function exportConsolidatedPDF(): Promise<void> {
   const [onRes, leadsRes] = await Promise.all([
-    supabase.from('live_sessions').select('*').eq('dashboard_key', 'onboarding').order('date', { ascending: false }),
-    supabase.from('live_sessions').select('*').eq('dashboard_key', 'leads').order('date', { ascending: false }),
+    supabase
+      .from('live_sessions')
+      .select('*')
+      .eq('dashboard_key', 'onboarding')
+      .order('date', { ascending: false }),
+    supabase
+      .from('live_sessions')
+      .select('*')
+      .eq('dashboard_key', 'leads')
+      .order('date', { ascending: false }),
   ])
 
   const toStream = (rows: typeof onRes.data): StreamData[] =>

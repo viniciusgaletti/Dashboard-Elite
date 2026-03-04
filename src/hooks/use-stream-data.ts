@@ -71,9 +71,7 @@ async function fetchFromCSV(url: string): Promise<StreamData[]> {
       date: getVal(rowObj, ['data']),
       views: parseNumber(getVal(rowObj, ['pico', 'pico de pessoas', 'audiencia', 'max'])),
       leads: parseNumber(getVal(rowObj, ['leads', 'cadastros'])),
-      conversion: parseNumber(
-        getVal(rowObj, ['conversao', 'tx conversao', 'taxa de conversao']),
-      ),
+      conversion: parseNumber(getVal(rowObj, ['conversao', 'tx conversao', 'taxa de conversao'])),
       revenue: parseNumber(
         getVal(rowObj, ['receita', 'faturamento', 'valor', 'faturamento total']),
       ),
