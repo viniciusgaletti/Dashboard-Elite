@@ -8,6 +8,6 @@ export const NAV_LINKS = [
     icon: DASHBOARDS.onboarding.icon,
   },
   { name: DASHBOARDS.leads.title, path: DASHBOARDS.leads.path, icon: DASHBOARDS.leads.icon },
-  { name: 'Faturamento', path: '/faturamento', icon: DollarSign },
+  { name: 'Faturamento & Metas', path: '/faturamento', icon: DollarSign },
   { name: 'Configurações', path: '/settings', icon: Settings },
 ]

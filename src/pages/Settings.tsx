@@ -1,17 +1,17 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
-import { LogOut, Moon, Sun } from 'lucide-react'
+import { LogOut, Moon, Sun, Monitor, Camera } from 'lucide-react'
 import { useTheme } from 'next-themes'
 
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
-import { Switch } from '@/components/ui/switch'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { useAuth } from '@/hooks/use-auth'
 import { getProfile, updateProfile } from '@/services/profiles'
+import { supabase } from '@/lib/supabase/client'
 
 export default function Settings() {
   const { user, signOut } = useAuth()
@@ -20,8 +20,12 @@ export default function Settings() {
 
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
+  const [avatarUrl, setAvatarUrl] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [isFetching, setIsFetching] = useState(true)
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false)
+
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     async function fetchProfileData() {
@@ -33,6 +37,7 @@ export default function Settings() {
       if (!error && data) {
         setFirstName(data.first_name || '')
         setLastName(data.last_name || '')
+        setAvatarUrl(data.avatar_url || '')
       }
       setIsFetching(false)
     }
@@ -59,14 +64,68 @@ export default function Settings() {
     }
   }
 
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file || !user) return
+
+    // Validate file
+    const validTypes = ['image/jpeg', 'image/png']
+    if (!validTypes.includes(file.type)) {
+      toast.error('Apenas imagens JPEG ou PNG são aceitas.')
+      return
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('A imagem deve ter no máximo 5MB.')
+      return
+    }
+
+    setIsUploadingAvatar(true)
+
+    try {
+      const ext = file.type === 'image/png' ? 'png' : 'jpg'
+      const filePath = `${user.id}.${ext}`
+
+      // Upload to Supabase Storage
+      const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(filePath, file, { upsert: true })
+
+      if (uploadError) throw uploadError
+
+      // Get public URL
+      const { data: { publicUrl } } = supabase.storage
+        .from('avatars')
+        .getPublicUrl(filePath)
+
+      const urlWithTimestamp = `${publicUrl}?t=${Date.now()}`
+
+      // Update profile
+      const { error: updateError } = await updateProfile(user.id, {
+        avatar_url: urlWithTimestamp,
+      })
+
+      if (updateError) throw updateError
+
+      setAvatarUrl(urlWithTimestamp)
+      toast.success('Foto atualizada com sucesso!')
+    } catch {
+      toast.error('Erro ao atualizar foto. Verifique se o bucket "avatars" existe no Supabase Storage.')
+    } finally {
+      setIsUploadingAvatar(false)
+    }
+  }
+
   const handleSignOut = async () => {
     await signOut()
     navigate('/auth')
   }
 
-  const isDark =
-    theme === 'dark' ||
-    (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+  const getInitials = () => {
+    if (firstName) return firstName.charAt(0).toUpperCase()
+    return user?.email?.charAt(0).toUpperCase() || '?'
+  }
+
+  const displayAvatarUrl = avatarUrl || `https://img.usecurling.com/ppl/thumbnail?seed=${user?.id}`
 
   return (
     <div className="space-y-8 animate-fade-in-up pb-12 max-w-3xl mx-auto">
@@ -78,6 +137,7 @@ export default function Settings() {
       </div>
 
       <div className="space-y-8">
+        {/* Profile */}
         <section>
           <h3 className="text-headline mb-3 px-1 text-label-secondary uppercase text-sm tracking-wider">
             Perfil
@@ -86,21 +146,39 @@ export default function Settings() {
             <CardContent className="p-0">
               <form onSubmit={handleUpdateProfile} className="p-6 space-y-6">
                 <div className="flex items-center gap-4 mb-2">
-                  <Avatar className="w-16 h-16 shadow-sm">
-                    <AvatarImage
-                      src={`https://img.usecurling.com/ppl/thumbnail?seed=${user?.id}`}
+                  <div className="relative group">
+                    <Avatar className="w-16 h-16 shadow-sm">
+                      <AvatarImage src={displayAvatarUrl} />
+                      <AvatarFallback className="text-xl bg-primary text-primary-foreground">
+                        {getInitials()}
+                      </AvatarFallback>
+                    </Avatar>
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      disabled={isUploadingAvatar}
+                      className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                    >
+                      <Camera className="w-5 h-5 text-white" />
+                    </button>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/jpeg,image/png"
+                      onChange={handleAvatarUpload}
+                      className="hidden"
                     />
-                    <AvatarFallback className="text-xl bg-primary text-primary-foreground">
-                      {firstName
-                        ? firstName.charAt(0).toUpperCase()
-                        : user?.email?.charAt(0).toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
+                  </div>
                   <div>
                     <p className="font-semibold text-lg text-label-primary">{user?.email}</p>
-                    <p className="text-sm text-muted-foreground">
-                      ID: {user?.id.substring(0, 8)}...
-                    </p>
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      disabled={isUploadingAvatar}
+                      className="text-sm text-primary hover:underline cursor-pointer"
+                    >
+                      {isUploadingAvatar ? 'Enviando...' : 'Alterar foto'}
+                    </button>
                   </div>
                 </div>
 
@@ -147,6 +225,7 @@ export default function Settings() {
           </Card>
         </section>
 
+        {/* Appearance */}
         <section>
           <h3 className="text-headline mb-3 px-1 text-label-secondary uppercase text-sm tracking-wider">
             Aparência
@@ -154,29 +233,45 @@ export default function Settings() {
           <Card className="glass-panel border-0 overflow-hidden">
             <CardContent className="p-0">
               <div className="p-4 sm:p-6">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2.5 rounded-xl bg-secondary text-primary">
-                      {isDark ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
-                    </div>
-                    <div>
-                      <p className="font-medium text-label-primary">Modo Escuro</p>
-                      <p className="text-sm text-muted-foreground">
-                        Alterne entre o tema claro e escuro
-                      </p>
-                    </div>
-                  </div>
-                  <Switch
-                    checked={theme === 'dark'}
-                    onCheckedChange={(checked) => setTheme(checked ? 'dark' : 'light')}
-                    className="data-[state=checked]:bg-success"
-                  />
+                <p className="font-medium text-label-primary mb-1">Tema</p>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Escolha como o dashboard será exibido.
+                </p>
+                <div className="flex gap-2">
+                  <Button
+                    variant={theme === 'light' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setTheme('light')}
+                    className="gap-2 flex-1"
+                  >
+                    <Sun className="w-4 h-4" />
+                    Light
+                  </Button>
+                  <Button
+                    variant={theme === 'dark' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setTheme('dark')}
+                    className="gap-2 flex-1"
+                  >
+                    <Moon className="w-4 h-4" />
+                    Dark
+                  </Button>
+                  <Button
+                    variant={theme === 'system' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setTheme('system')}
+                    className="gap-2 flex-1"
+                  >
+                    <Monitor className="w-4 h-4" />
+                    Sistema
+                  </Button>
                 </div>
               </div>
             </CardContent>
           </Card>
         </section>
 
+        {/* Account */}
         <section>
           <h3 className="text-headline mb-3 px-1 text-label-secondary uppercase text-sm tracking-wider">
             Conta

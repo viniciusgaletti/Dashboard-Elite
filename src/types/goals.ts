@@ -19,6 +19,7 @@ export interface Sale {
   id: string
   user_id: string
   product_name: string
+  unit_price: number
   sale_value: number
   quantity: number
   seller_name: string

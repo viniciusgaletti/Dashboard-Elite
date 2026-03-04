@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { cn } from '@/lib/utils'
 import { NAV_LINKS } from '@/lib/constants'
@@ -7,11 +8,45 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { useSidebar } from '@/hooks/use-sidebar'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { supabase } from '@/lib/supabase/client'
 
 export function Sidebar({ className }: { className?: string }) {
   const location = useLocation()
   const { user, signOut } = useAuth()
   const { isCollapsed, toggleSidebar } = useSidebar()
+  const [avatarUrl, setAvatarUrl] = useState('')
+
+  useEffect(() => {
+    if (!user) return
+
+    // Fetch profile avatar
+    const fetchAvatar = async () => {
+      const { data } = await supabase
+        .from('profiles')
+        .select('avatar_url')
+        .eq('id', user.id)
+        .single()
+      if (data?.avatar_url) setAvatarUrl(data.avatar_url)
+    }
+    fetchAvatar()
+
+    // Listen for profile changes (avatar update from Settings)
+    const channel = supabase
+      .channel('sidebar-profile')
+      .on(
+        'postgres_changes',
+        { event: 'UPDATE', schema: 'public', table: 'profiles', filter: `id=eq.${user.id}` },
+        (payload) => {
+          const updated = payload.new as { avatar_url?: string }
+          if (updated.avatar_url) setAvatarUrl(updated.avatar_url)
+        },
+      )
+      .subscribe()
+
+    return () => { supabase.removeChannel(channel) }
+  }, [user])
+
+  const displayAvatarUrl = avatarUrl || `https://img.usecurling.com/ppl/thumbnail?seed=${user?.id}`
 
   return (
     <TooltipProvider delayDuration={0}>
@@ -30,16 +65,18 @@ export function Sidebar({ className }: { className?: string }) {
               isCollapsed ? 'justify-center px-0' : 'px-2',
             )}
           >
-            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center shadow-elevation text-white font-bold shrink-0 text-xs">
-              C.I
-            </div>
+            <img
+              src="/adapta-logo.png"
+              alt="Adapta"
+              className="w-8 h-8 rounded-lg shadow-elevation shrink-0 object-cover"
+            />
             <span
               className={cn(
-                'text-headline whitespace-nowrap transition-all duration-300',
+                'text-headline whitespace-nowrap transition-all duration-300 font-bold',
                 isCollapsed ? 'w-0 opacity-0 overflow-hidden' : 'w-auto opacity-100',
               )}
             >
-              Live Dashboard
+              Elite Insights
             </span>
           </div>
 
@@ -105,7 +142,7 @@ export function Sidebar({ className }: { className?: string }) {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Avatar className="shrink-0">
-                  <AvatarImage src={`https://img.usecurling.com/ppl/thumbnail?seed=${user?.id}`} />
+                  <AvatarImage src={displayAvatarUrl} />
                   <AvatarFallback>{user?.email?.charAt(0).toUpperCase()}</AvatarFallback>
                 </Avatar>
               </TooltipTrigger>
@@ -141,3 +178,4 @@ export function Sidebar({ className }: { className?: string }) {
     </TooltipProvider>
   )
 }
+

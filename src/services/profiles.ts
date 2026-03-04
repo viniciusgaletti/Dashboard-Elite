@@ -6,7 +6,7 @@ export const getProfile = async (userId: string) => {
 
 export const updateProfile = async (
   userId: string,
-  data: { first_name?: string; last_name?: string },
+  data: { first_name?: string; last_name?: string; avatar_url?: string },
 ) => {
   return await supabase
     .from('profiles')

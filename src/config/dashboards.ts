@@ -12,7 +12,7 @@ export const DASHBOARDS = {
   leads: {
     csvUrl:
       'https://docs.google.com/spreadsheets/d/e/2PACX-1vQRIfDNJI2X3oM5GP3BrPqJn58boIEDtYizqTOTJJ186gVJe6tYYcqt9BFt_vgIW-qEj0GM4XGcJKzH/pub?output=csv',
-    title: 'Leads',
+    title: 'Live Leads',
     fullTitle: 'Dashboard da Live de Leads',
     path: '/leads',
     icon: Megaphone,
