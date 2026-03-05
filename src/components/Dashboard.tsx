@@ -80,15 +80,15 @@ export function Dashboard({ csvUrl, dashboardKey, title, fullTitle, icon: Icon }
 
   return (
     <main className="animate-fade-in-up container max-w-[1600px] w-full py-6 md:py-8 space-y-6 md:space-y-8 relative">
-      <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between glass-panel p-6 rounded-2xl">
-        <div className="w-full space-y-2">
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-primary text-primary-foreground shadow-sm">
-              <Icon className="w-5 h-5" />
+      <div className="flex flex-col md:flex-row gap-3 md:gap-4 items-start md:items-center justify-between glass-panel p-4 md:p-6 rounded-2xl">
+        <div className="w-full space-y-1 md:space-y-2">
+          <div className="flex items-center gap-2 md:gap-3">
+            <div className="p-2 md:p-2.5 rounded-xl bg-primary text-primary-foreground shadow-sm">
+              <Icon className="w-4 h-4 md:w-5 md:h-5" />
             </div>
-            <h2 className="text-large-title text-2xl">{fullTitle}</h2>
+            <h2 className="text-large-title text-xl md:text-2xl">{fullTitle}</h2>
           </div>
-          <p className="text-body text-muted-foreground">
+          <p className="text-body text-muted-foreground hidden sm:block">
             Monitore os resultados das suas transmissões e campanhas de {title.toLowerCase()}.
           </p>
         </div>

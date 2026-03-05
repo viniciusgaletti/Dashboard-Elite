@@ -109,13 +109,13 @@
   }
 
   .text-large-title {
-    @apply text-[34px] font-bold leading-tight tracking-tight text-label-primary;
+    @apply text-[22px] md:text-[34px] font-bold leading-tight tracking-tight text-label-primary;
   }
   .text-headline {
     @apply text-[17px] font-semibold leading-snug tracking-tight text-label-primary;
   }
   .text-body {
-    @apply text-[17px] font-normal leading-normal tracking-tight text-label-primary;
+    @apply text-[15px] md:text-[17px] font-normal leading-normal tracking-tight text-label-primary;
   }
   .text-caption {
     @apply text-[12px] font-normal leading-none text-label-secondary;
@@ -132,7 +132,7 @@
 
   /* KPI fluid value sizing */
   .kpi-value {
-    font-size: clamp(1.15rem, 1.5vw + 0.5rem, 1.75rem);
+    font-size: clamp(1rem, 1.2vw + 0.5rem, 1.75rem);
     line-height: 1.2;
   }
 

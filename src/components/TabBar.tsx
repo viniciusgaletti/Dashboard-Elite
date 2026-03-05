@@ -8,7 +8,7 @@ export function TabBar({ className }: { className?: string }) {
   return (
     <nav
       className={cn(
-        'fixed bottom-0 w-full material-regular border-t border-black/5 dark:border-white/5 pb-safe pt-2 px-4 flex justify-between items-center z-50 md:hidden',
+        'fixed bottom-0 w-full material-regular border-t border-black/5 dark:border-white/5 pb-safe pt-2.5 px-2 flex justify-around items-center z-50 md:hidden',
         className,
       )}
     >
@@ -21,12 +21,12 @@ export function TabBar({ className }: { className?: string }) {
             key={link.path}
             to={link.path}
             className={cn(
-              'flex flex-col items-center gap-1 min-w-[64px] pb-2 transition-colors',
+              'flex flex-col items-center gap-0.5 min-w-[60px] py-1.5 pb-2.5 rounded-lg transition-colors',
               isActive ? 'text-primary' : 'text-muted-foreground',
             )}
           >
-            <Icon className="w-6 h-6" />
-            <span className="text-[10px] font-medium">{link.name}</span>
+            <Icon className="w-5 h-5" />
+            <span className="text-[11px] font-medium leading-tight">{link.name}</span>
           </Link>
         )
       })}
