@@ -187,17 +187,28 @@ export function FilterBar({
             </div>
           )}
         </div>
-        <ChevronDown className={cn('w-4 h-4 text-muted-foreground transition-transform duration-200 flex-shrink-0', mobileExpanded && 'rotate-180')} />
+        <ChevronDown
+          className={cn(
+            'w-4 h-4 text-muted-foreground transition-transform duration-200 flex-shrink-0',
+            mobileExpanded && 'rotate-180',
+          )}
+        />
       </button>
 
       {/* Filter content — always visible on desktop, toggle on mobile */}
-      <div className={cn(
-        'transition-all duration-300 ease-out md:!max-h-none md:!opacity-100 md:!overflow-visible md:!p-4',
-        mobileExpanded ? 'max-h-[600px] opacity-100 overflow-y-auto p-4 pt-2' : 'max-h-0 opacity-0 overflow-hidden',
-      )}>
+      <div
+        className={cn(
+          'transition-all duration-300 ease-out md:!max-h-none md:!opacity-100 md:!overflow-visible md:!p-4',
+          mobileExpanded
+            ? 'max-h-[600px] opacity-100 overflow-y-auto p-4 pt-2'
+            : 'max-h-0 opacity-0 overflow-hidden',
+        )}
+      >
         {/* Mobile close button */}
         <div className="md:hidden flex items-center justify-between mb-3">
-          <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Filtros</span>
+          <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+            Filtros
+          </span>
           <button
             onClick={() => setMobileExpanded(false)}
             className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors px-2 py-1 rounded-lg hover:bg-secondary/50"
