@@ -2,6 +2,7 @@ import { Area, AreaChart, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Line
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { StreamData } from '@/types/stream'
+import { parseDateStr } from '@/lib/data-utils'
 
 interface ChartDataPoint {
   date: string
@@ -45,6 +46,9 @@ export function ConversionAreaChart({
       })
     }
   }
+
+  // Sort chronologically: oldest → newest (left to right)
+  chartData.sort((a, b) => parseDateStr(a.date).getTime() - parseDateStr(b.date).getTime())
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-8">
