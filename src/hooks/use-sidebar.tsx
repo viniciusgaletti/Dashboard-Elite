@@ -22,7 +22,9 @@ export function SidebarProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEY, String(isCollapsed))
-    } catch {}
+    } catch {
+      // Ignore storage errors in private browsing or restricted environments.
+    }
   }, [isCollapsed])
 
   const toggleSidebar = () => setIsCollapsed((prev) => !prev)
