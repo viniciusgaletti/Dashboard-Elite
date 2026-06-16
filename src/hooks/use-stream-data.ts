@@ -25,6 +25,27 @@ interface UseStreamDataReturn {
   availableHosts: string[]
 }
 
+function sortStreamData(data: StreamData[]): StreamData[] {
+  return [...data].sort((a, b) => parseDateStr(b.date).getTime() - parseDateStr(a.date).getTime())
+}
+
+function normalizeStreamData(data: StreamData[]): StreamData[] {
+  const deduped = new Map<string, StreamData>()
+  data.forEach((row) => {
+    const date = row.date.trim()
+    const presenter = row.presenter.trim() || 'Desconhecido'
+    if (!date) return
+
+    deduped.set(`${date}__${presenter}`, {
+      ...row,
+      date,
+      presenter,
+    })
+  })
+
+  return sortStreamData(Array.from(deduped.values()))
+}
+
 function rowToStreamData(row: LiveSessionRow): StreamData {
   return {
     date: row.date,
@@ -46,7 +67,7 @@ async function fetchFromSupabase(dashboardKey: string): Promise<StreamData[] | n
     .order('date', { ascending: false })
 
   if (error || !data || data.length === 0) return null
-  return data.map(rowToStreamData)
+  return normalizeStreamData(data.map(rowToStreamData))
 }
 
 async function fetchFromCSV(url: string): Promise<StreamData[]> {
@@ -68,9 +89,11 @@ async function fetchFromCSV(url: string): Promise<StreamData[]> {
       rowObj[h] = rows[i][idx] ? rows[i][idx].trim() : ''
     })
     parsedData.push({
-      date: getVal(rowObj, ['data']),
-      views: parseNumber(getVal(rowObj, ['pico', 'pico de pessoas', 'audiencia', 'max'])),
-      leads: parseNumber(getVal(rowObj, ['leads', 'cadastros'])),
+      date: getVal(rowObj, ['data', 'date']),
+      views: parseNumber(
+        getVal(rowObj, ['pico', 'pico de pessoas', 'audiencia', 'audiencia maxima', 'max']),
+      ),
+      leads: parseNumber(getVal(rowObj, ['leads', 'cadastros', 'inscritos', 'participantes'])),
       conversion: parseNumber(getVal(rowObj, ['conversao', 'tx conversao', 'taxa de conversao'])),
       revenue: parseNumber(
         getVal(rowObj, ['receita', 'faturamento', 'valor', 'faturamento total']),
@@ -78,12 +101,12 @@ async function fetchFromCSV(url: string): Promise<StreamData[]> {
       sales: parseNumber(
         getVal(rowObj, ['vendas', 'qtdvendas', 'qtd vendas', 'quantidade', 'numero de vendas']),
       ),
-      presenter: getVal(rowObj, ['apresentador', 'host', 'nome']) || 'Desconhecido',
+      presenter: getVal(rowObj, ['apresentador', 'host', 'nome', 'mentor']) || 'Desconhecido',
       retention: parseNumber(getVal(rowObj, ['retencao', 'tx retencao', 'taxa de retencao'])),
     })
   }
-  return parsedData.filter(
-    (row) => row.views > 0 || row.leads > 0 || row.revenue > 0 || row.sales > 0,
+  return normalizeStreamData(
+    parsedData.filter((row) => row.views > 0 || row.leads > 0 || row.revenue > 0 || row.sales > 0),
   )
 }
 
@@ -91,7 +114,6 @@ export const useStreamData = (url: string, dashboardKey?: string): UseStreamData
   const [rawData, setRawData] = useState<StreamData[]>([])
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
-  const [usingSupabase, setUsingSupabase] = useState(false)
   const isFirstLoad = useRef(true)
 
   const [filterState, setFilterState] = useState<FilterState>({
@@ -114,21 +136,17 @@ export const useStreamData = (url: string, dashboardKey?: string): UseStreamData
       if (isFirstLoad.current) setIsLoading(true)
       setError(null)
 
-      let result: StreamData[] | null = null
+      try {
+        const result = await fetchFromCSV(url)
+        setRawData(result)
+      } catch (csvError) {
+        if (!dashboardKey) throw csvError
 
-      if (dashboardKey) {
-        result = await fetchFromSupabase(dashboardKey)
-        if (result !== null) {
-          setUsingSupabase(true)
-        }
+        const fallback = await fetchFromSupabase(dashboardKey)
+        if (fallback === null) throw csvError
+        setRawData(fallback)
+        setError('A planilha não respondeu; exibindo último cache disponível.')
       }
-
-      if (result === null) {
-        result = await fetchFromCSV(url)
-        setUsingSupabase(false)
-      }
-
-      setRawData(result)
     } catch (err) {
       setError('Erro ao carregar dados')
     } finally {
@@ -139,62 +157,14 @@ export const useStreamData = (url: string, dashboardKey?: string): UseStreamData
     }
   }, [url, dashboardKey])
 
-  // Initial fetch + polling (somente no modo CSV — Realtime substitui o polling no modo Supabase)
+  // The published sheet is the canonical source. Polling keeps edits reflected without a reload.
   useEffect(() => {
     isFirstLoad.current = true
     fetchData()
 
-    if (!dashboardKey) {
-      const intervalId = setInterval(fetchData, 30000)
-      return () => clearInterval(intervalId)
-    }
-  }, [fetchData, dashboardKey])
-
-  // Realtime subscription (somente quando usando Supabase)
-  useEffect(() => {
-    if (!dashboardKey || !usingSupabase) return
-
-    const channel = supabase
-      .channel(`live-sessions-${dashboardKey}`)
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'live_sessions',
-          filter: `dashboard_key=eq.${dashboardKey}`,
-        },
-        (payload) => {
-          if (payload.eventType === 'INSERT') {
-            const newRow = rowToStreamData(payload.new as LiveSessionRow)
-            setRawData((prev) => {
-              const exists = prev.some(
-                (r) => r.date === newRow.date && r.presenter === newRow.presenter,
-              )
-              if (exists) return prev
-              return [newRow, ...prev]
-            })
-          } else if (payload.eventType === 'UPDATE') {
-            const updated = rowToStreamData(payload.new as LiveSessionRow)
-            setRawData((prev) =>
-              prev.map((r) =>
-                r.date === updated.date && r.presenter === updated.presenter ? updated : r,
-              ),
-            )
-          } else if (payload.eventType === 'DELETE') {
-            const old = payload.old as { date: string; presenter: string }
-            setRawData((prev) =>
-              prev.filter((r) => !(r.date === old.date && r.presenter === old.presenter)),
-            )
-          }
-        },
-      )
-      .subscribe()
-
-    return () => {
-      supabase.removeChannel(channel)
-    }
-  }, [dashboardKey, usingSupabase])
+    const intervalId = setInterval(fetchData, 30000)
+    return () => clearInterval(intervalId)
+  }, [fetchData])
 
   const availableHosts = useMemo(() => {
     const hosts = new Set<string>()
