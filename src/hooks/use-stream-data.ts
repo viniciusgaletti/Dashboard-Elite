@@ -70,20 +70,24 @@ async function fetchFromSupabase(dashboardKey: string): Promise<StreamData[] | n
   return normalizeStreamData(data.map(rowToStreamData))
 }
 
-async function fetchFromCSV(url: string): Promise<StreamData[]> {
-  const fetchUrl = url.includes('?')
-    ? `${url}&_t=${new Date().getTime()}`
-    : `${url}?_t=${new Date().getTime()}`
-  const response = await fetch(fetchUrl)
-  if (!response.ok) throw new Error('Falha ao buscar o arquivo CSV')
+function findHeaderRowIndex(rows: string[][]): number {
+  return rows.findIndex((row) => {
+    const headers = row.map((cell) => normalizeKey(cell))
+    return (
+      headers.includes('data') &&
+      headers.some((header) => ['apresentador', 'host', 'nome', 'mentor'].includes(header)) &&
+      headers.some((header) =>
+        ['receita', 'faturamento', 'valor', 'faturamento total'].includes(header),
+      )
+    )
+  })
+}
 
-  const text = await response.text()
-  const rows = parseCSV(text).filter((row) => row.some((cell) => cell.trim().length > 0))
-  if (rows.length < 2) return []
-
-  const headers = rows[0].map((h) => normalizeKey(h))
+function parseCSVWithHeaders(rows: string[][], headerIndex: number): StreamData[] {
+  const headers = rows[headerIndex].map((h) => normalizeKey(h))
   const parsedData: StreamData[] = []
-  for (let i = 1; i < rows.length; i++) {
+
+  for (let i = headerIndex + 1; i < rows.length; i++) {
     const rowObj: Record<string, string> = {}
     headers.forEach((h, idx) => {
       rowObj[h] = rows[i][idx] ? rows[i][idx].trim() : ''
@@ -105,6 +109,37 @@ async function fetchFromCSV(url: string): Promise<StreamData[]> {
       retention: parseNumber(getVal(rowObj, ['retencao', 'tx retencao', 'taxa de retencao'])),
     })
   }
+
+  return parsedData
+}
+
+function parseHeaderlessCSV(rows: string[][]): StreamData[] {
+  return rows.map((row) => ({
+    date: row[0]?.trim() || '',
+    views: parseNumber(row[2] || ''),
+    leads: parseNumber(row[3] || ''),
+    sales: parseNumber(row[4] || ''),
+    presenter: row[5]?.trim() || 'Desconhecido',
+    conversion: parseNumber(row[6] || ''),
+    retention: parseNumber(row[7] || ''),
+    revenue: parseNumber(row[8] || ''),
+  }))
+}
+
+async function fetchFromCSV(url: string): Promise<StreamData[]> {
+  const fetchUrl = url.includes('?')
+    ? `${url}&_t=${new Date().getTime()}`
+    : `${url}?_t=${new Date().getTime()}`
+  const response = await fetch(fetchUrl)
+  if (!response.ok) throw new Error('Falha ao buscar o arquivo CSV')
+
+  const text = await response.text()
+  const rows = parseCSV(text).filter((row) => row.some((cell) => cell.trim().length > 0))
+  if (rows.length < 2) return []
+
+  const headerIndex = findHeaderRowIndex(rows)
+  const parsedData =
+    headerIndex >= 0 ? parseCSVWithHeaders(rows, headerIndex) : parseHeaderlessCSV(rows)
   return normalizeStreamData(
     parsedData.filter((row) => row.views > 0 || row.leads > 0 || row.revenue > 0 || row.sales > 0),
   )
@@ -138,7 +173,23 @@ export const useStreamData = (url: string, dashboardKey?: string): UseStreamData
 
       try {
         const result = await fetchFromCSV(url)
-        setRawData(result)
+        if (result.length > 0) {
+          setRawData(result)
+          return
+        }
+
+        if (!dashboardKey) {
+          setRawData([])
+          return
+        }
+
+        const fallback = await fetchFromSupabase(dashboardKey)
+        if (fallback === null) {
+          setRawData([])
+          return
+        }
+        setRawData(fallback)
+        setError('A planilha retornou vazia; exibindo último cache disponível.')
       } catch (csvError) {
         if (!dashboardKey) throw csvError
 
