@@ -124,15 +124,15 @@ function TrendChart({ data, activeMetric }: { data: StreamData[]; activeMetric: 
 
   return (
     <ChartContainer
-      config={{ [activeMetric]: { label: metricLabel, color: '#D9B979' } }}
+      config={{ [activeMetric]: { label: metricLabel, color: '#319C8A' } }}
       className="h-[200px] w-full"
     >
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
           <defs>
             <linearGradient id="colorTrend" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#D9B979" stopOpacity={0.3} />
-              <stop offset="95%" stopColor="#D9B979" stopOpacity={0} />
+              <stop offset="5%" stopColor="#319C8A" stopOpacity={0.3} />
+              <stop offset="95%" stopColor="#319C8A" stopOpacity={0} />
             </linearGradient>
           </defs>
           <CartesianGrid vertical={false} stroke="hsl(var(--border))" strokeOpacity={0.1} />
@@ -152,28 +152,28 @@ function TrendChart({ data, activeMetric }: { data: StreamData[]; activeMetric: 
           <ChartTooltip
             content={
               <ChartTooltipContent
-                className="glass-panel border-0 shadow-elevation [&_.font-mono]:!text-[#D9B979]"
+                className="glass-panel border-0 shadow-elevation [&_.font-mono]:!text-[#319C8A]"
                 formatter={(val) => formatTooltipVal(Number(val))}
               />
             }
-            cursor={{ stroke: '#D9B979', strokeWidth: 1, strokeDasharray: '4 4' }}
+            cursor={{ stroke: '#319C8A', strokeWidth: 1, strokeDasharray: '4 4' }}
           />
           <Area
             type="monotone"
             dataKey={activeMetric}
-            stroke="#D9B979"
+            stroke="#319C8A"
             strokeWidth={2.5}
             fillOpacity={1}
             fill="url(#colorTrend)"
             activeDot={{
               r: 5,
-              fill: '#D9B979',
+              fill: '#319C8A',
               stroke: 'var(--background)',
               strokeWidth: 2,
             }}
             dot={{
               r: 4,
-              fill: '#D9B979',
+              fill: '#319C8A',
               stroke: 'var(--background)',
               strokeWidth: 2,
             }}

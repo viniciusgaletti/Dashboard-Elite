@@ -1,8 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
-import { LogOut, Moon, Sun, Monitor, Camera, Users, Plus, Trash2 } from '@/components/ui/icons'
-import { useTheme } from 'next-themes'
+import { LogOut, Camera, Users, Plus, Trash2 } from '@/components/ui/icons'
 
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -18,7 +17,6 @@ import { supabase } from '@/lib/supabase/client'
 export default function Settings() {
   const { user, signOut } = useAuth()
   const navigate = useNavigate()
-  const { theme, setTheme } = useTheme()
 
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
@@ -263,52 +261,6 @@ export default function Settings() {
                   </Button>
                 </div>
               </form>
-            </CardContent>
-          </Card>
-        </section>
-
-        {/* Appearance */}
-        <section>
-          <h3 className="text-headline mb-3 px-1 text-label-secondary uppercase text-sm tracking-wider">
-            Aparência
-          </h3>
-          <Card className="glass-panel border-0 overflow-hidden">
-            <CardContent className="p-0">
-              <div className="p-4 sm:p-6">
-                <p className="font-medium text-label-primary mb-1">Tema</p>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Escolha como o dashboard será exibido.
-                </p>
-                <div className="flex gap-2">
-                  <Button
-                    variant={theme === 'light' ? 'default' : 'outline'}
-                    size="sm"
-                    onClick={() => setTheme('light')}
-                    className="gap-2 flex-1"
-                  >
-                    <Sun className="w-4 h-4" />
-                    Light
-                  </Button>
-                  <Button
-                    variant={theme === 'dark' ? 'default' : 'outline'}
-                    size="sm"
-                    onClick={() => setTheme('dark')}
-                    className="gap-2 flex-1"
-                  >
-                    <Moon className="w-4 h-4" />
-                    Dark
-                  </Button>
-                  <Button
-                    variant={theme === 'system' ? 'default' : 'outline'}
-                    size="sm"
-                    onClick={() => setTheme('system')}
-                    className="gap-2 flex-1"
-                  >
-                    <Monitor className="w-4 h-4" />
-                    Sistema
-                  </Button>
-                </div>
-              </div>
             </CardContent>
           </Card>
         </section>

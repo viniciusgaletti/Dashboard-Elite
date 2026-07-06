@@ -70,7 +70,7 @@ export function Sidebar({ className }: { className?: string }) {
             <img
               src="/adapta-logo.png"
               alt="Adapta"
-              className="w-8 h-8 rounded-lg shadow-elevation shrink-0 object-cover"
+              className="w-8 h-8 rounded-lg shrink-0 object-cover"
             />
             <span
               className={cn(
@@ -96,7 +96,7 @@ export function Sidebar({ className }: { className?: string }) {
                     'flex items-center gap-3 rounded-lg text-body transition-all duration-200',
                     isCollapsed ? 'px-0 py-2.5 justify-center' : 'px-3 py-2.5',
                     isActive
-                      ? 'bg-primary text-primary-foreground shadow-subtle'
+                      ? 'bg-primary text-primary-foreground'
                       : 'text-muted-foreground hover:bg-secondary hover:text-foreground',
                   )}
                 >

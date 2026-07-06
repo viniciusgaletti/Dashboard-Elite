@@ -59,9 +59,9 @@ export function ConversionAreaChart({
         <CardContent className="pb-4">
           <ChartContainer
             config={{
-              revenue: { label: 'Faturamento', color: '#D9B979' },
+              revenue: { label: 'Faturamento', color: '#319C8A' },
               ...(showComparison
-                ? { prevRevenue: { label: 'Período Anterior', color: '#D9B979' } }
+                ? { prevRevenue: { label: 'Período Anterior', color: '#319C8A' } }
                 : {}),
             }}
             className="h-[300px] w-full"
@@ -70,8 +70,8 @@ export function ConversionAreaChart({
               <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <defs>
                   <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#D9B979" stopOpacity={0.3} />
-                    <stop offset="95%" stopColor="#D9B979" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#319C8A" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="#319C8A" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid vertical={false} stroke="hsl(var(--border))" strokeOpacity={0.1} />
@@ -92,19 +92,19 @@ export function ConversionAreaChart({
                 <ChartTooltip
                   content={
                     <ChartTooltipContent
-                      className="glass-panel border-0 shadow-elevation [&_.font-mono]:!text-[#D9B979]"
+                      className="glass-panel border-0 shadow-elevation [&_.font-mono]:!text-[#319C8A]"
                       formatter={(val) =>
                         `R$ ${Number(val).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`
                       }
                     />
                   }
-                  cursor={{ stroke: '#D9B979', strokeWidth: 1, strokeDasharray: '4 4' }}
+                  cursor={{ stroke: '#319C8A', strokeWidth: 1, strokeDasharray: '4 4' }}
                 />
                 {showComparison && (
                   <Line
                     type="monotone"
                     dataKey="prevRevenue"
-                    stroke="#D9B979"
+                    stroke="#319C8A"
                     strokeWidth={2}
                     strokeDasharray="6 4"
                     strokeOpacity={0.4}
@@ -117,11 +117,11 @@ export function ConversionAreaChart({
                 <Area
                   type="monotone"
                   dataKey="revenue"
-                  stroke="#D9B979"
+                  stroke="#319C8A"
                   strokeWidth={3}
                   fillOpacity={1}
                   fill="url(#colorRevenue)"
-                  activeDot={{ r: 6, fill: '#D9B979', stroke: 'var(--background)', strokeWidth: 2 }}
+                  activeDot={{ r: 6, fill: '#319C8A', stroke: 'var(--background)', strokeWidth: 2 }}
                   name="Faturamento"
                 />
               </AreaChart>
@@ -130,13 +130,13 @@ export function ConversionAreaChart({
           {showComparison && (
             <div className="flex items-center gap-4 mt-3 px-1">
               <div className="flex items-center gap-1.5">
-                <div className="w-4 h-0.5 bg-[#D9B979] rounded" />
+                <div className="w-4 h-0.5 bg-[#319C8A] rounded" />
                 <span className="text-[10px] text-muted-foreground">Atual</span>
               </div>
               <div className="flex items-center gap-1.5">
                 <div
-                  className="w-4 h-0.5 bg-[#D9B979]/40 rounded"
-                  style={{ borderTop: '2px dashed rgba(217,185,121,0.4)' }}
+                  className="w-4 h-0.5 bg-[#319C8A]/40 rounded"
+                  style={{ borderTop: '2px dashed rgba(49,156,138,0.4)' }}
                 />
                 <span className="text-[10px] text-muted-foreground">Anterior</span>
               </div>
@@ -152,9 +152,9 @@ export function ConversionAreaChart({
         <CardContent className="pb-4">
           <ChartContainer
             config={{
-              conversion: { label: 'Conversão', color: '#D9B979' },
+              conversion: { label: 'Conversão', color: '#319C8A' },
               ...(showComparison
-                ? { prevConversion: { label: 'Período Anterior', color: '#D9B979' } }
+                ? { prevConversion: { label: 'Período Anterior', color: '#319C8A' } }
                 : {}),
             }}
             className="h-[300px] w-full"
@@ -163,8 +163,8 @@ export function ConversionAreaChart({
               <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <defs>
                   <linearGradient id="colorConversion" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#D9B979" stopOpacity={0.3} />
-                    <stop offset="95%" stopColor="#D9B979" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#319C8A" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="#319C8A" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid vertical={false} stroke="hsl(var(--border))" strokeOpacity={0.1} />
@@ -185,17 +185,17 @@ export function ConversionAreaChart({
                 <ChartTooltip
                   content={
                     <ChartTooltipContent
-                      className="glass-panel border-0 shadow-elevation [&_.font-mono]:!text-[#D9B979]"
+                      className="glass-panel border-0 shadow-elevation [&_.font-mono]:!text-[#319C8A]"
                       formatter={(val) => `${Number(val).toFixed(1)}%`}
                     />
                   }
-                  cursor={{ stroke: '#D9B979', strokeWidth: 1, strokeDasharray: '4 4' }}
+                  cursor={{ stroke: '#319C8A', strokeWidth: 1, strokeDasharray: '4 4' }}
                 />
                 {showComparison && (
                   <Line
                     type="monotone"
                     dataKey="prevConversion"
-                    stroke="#D9B979"
+                    stroke="#319C8A"
                     strokeWidth={2}
                     strokeDasharray="6 4"
                     strokeOpacity={0.4}
@@ -208,11 +208,11 @@ export function ConversionAreaChart({
                 <Area
                   type="monotone"
                   dataKey="conversion"
-                  stroke="#D9B979"
+                  stroke="#319C8A"
                   strokeWidth={3}
                   fillOpacity={1}
                   fill="url(#colorConversion)"
-                  activeDot={{ r: 6, fill: '#D9B979', stroke: 'var(--background)', strokeWidth: 2 }}
+                  activeDot={{ r: 6, fill: '#319C8A', stroke: 'var(--background)', strokeWidth: 2 }}
                   name="Conversão"
                 />
               </AreaChart>
@@ -221,13 +221,13 @@ export function ConversionAreaChart({
           {showComparison && (
             <div className="flex items-center gap-4 mt-3 px-1">
               <div className="flex items-center gap-1.5">
-                <div className="w-4 h-0.5 bg-[#D9B979] rounded" />
+                <div className="w-4 h-0.5 bg-[#319C8A] rounded" />
                 <span className="text-[10px] text-muted-foreground">Atual</span>
               </div>
               <div className="flex items-center gap-1.5">
                 <div
-                  className="w-4 h-0.5 bg-[#D9B979]/40 rounded"
-                  style={{ borderTop: '2px dashed rgba(217,185,121,0.4)' }}
+                  className="w-4 h-0.5 bg-[#319C8A]/40 rounded"
+                  style={{ borderTop: '2px dashed rgba(49,156,138,0.4)' }}
                 />
                 <span className="text-[10px] text-muted-foreground">Anterior</span>
               </div>

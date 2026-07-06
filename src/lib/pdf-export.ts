@@ -17,7 +17,7 @@ const C = {
   bg: [15, 15, 15] as const,
   card: [26, 26, 26] as const,
   border: [42, 42, 42] as const,
-  gold: [217, 185, 121] as const,
+  gold: [49, 156, 138] as const,
   white: [255, 255, 255] as const,
   muted: [136, 136, 136] as const,
   rowEven: [20, 20, 20] as const,

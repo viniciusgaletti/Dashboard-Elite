@@ -115,7 +115,7 @@ export default function Auth() {
       </div>
 
       {/* Right — Hero Visual */}
-      <div className="hidden lg:flex flex-1 relative overflow-hidden bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700">
+      <div className="hidden lg:flex flex-1 relative overflow-hidden bg-[#0A0A0A]">
         {/* Background pattern */}
         <div className="absolute inset-0 opacity-10">
           <div
@@ -141,28 +141,28 @@ export default function Auth() {
           {/* Feature cards */}
           <div className="grid grid-cols-2 gap-4">
             <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-5 border border-white/10">
-              <div className="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center mb-3">
+              <div className="w-10 h-10 rounded-xl bg-white/10 text-[#319C8A] flex items-center justify-center mb-3">
                 <BarChart3 className="w-5 h-5" />
               </div>
               <p className="font-semibold text-sm">Dashboard em Tempo Real</p>
               <p className="text-white/60 text-xs mt-1">Dados atualizados ao vivo</p>
             </div>
             <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-5 border border-white/10">
-              <div className="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center mb-3">
+              <div className="w-10 h-10 rounded-xl bg-white/10 text-[#319C8A] flex items-center justify-center mb-3">
                 <TrendingUp className="w-5 h-5" />
               </div>
               <p className="font-semibold text-sm">Metas & Faturamento</p>
               <p className="text-white/60 text-xs mt-1">Acompanhe o progresso</p>
             </div>
             <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-5 border border-white/10">
-              <div className="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center mb-3">
+              <div className="w-10 h-10 rounded-xl bg-white/10 text-[#319C8A] flex items-center justify-center mb-3">
                 <Users className="w-5 h-5" />
               </div>
               <p className="font-semibold text-sm">Ranking de Vendedores</p>
               <p className="text-white/60 text-xs mt-1">Performance da equipe</p>
             </div>
             <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-5 border border-white/10">
-              <div className="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center mb-3">
+              <div className="w-10 h-10 rounded-xl bg-white/10 text-[#319C8A] flex items-center justify-center mb-3">
                 <DollarSign className="w-5 h-5" />
               </div>
               <p className="font-semibold text-sm">Mix de Produtos</p>
@@ -171,9 +171,9 @@ export default function Auth() {
           </div>
         </div>
 
-        {/* Decorative gradient orbs */}
-        <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-purple-500/30 rounded-full blur-3xl" />
-        <div className="absolute -top-16 -left-16 w-48 h-48 bg-blue-400/20 rounded-full blur-3xl" />
+        {/* Decorative brand orbs */}
+        <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-[#319C8A]/20 rounded-full blur-3xl" />
+        <div className="absolute -top-16 -left-16 w-48 h-48 bg-[#319C8A]/10 rounded-full blur-3xl" />
       </div>
     </div>
   )

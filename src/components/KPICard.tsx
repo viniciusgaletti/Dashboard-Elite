@@ -26,7 +26,7 @@ export function KPICard({
   tooltip,
 }: KPICardProps) {
   const card = (
-    <Card className="glass-panel border-0 hover:shadow-elevation transition-all duration-300 ease-out flex flex-col justify-between min-h-[120px] md:min-h-[140px] w-full overflow-hidden cursor-default">
+    <Card className="glass-panel border-0 transition-all duration-300 ease-out flex flex-col justify-between min-h-[120px] md:min-h-[140px] w-full overflow-hidden cursor-default">
       <CardContent className="p-3.5 sm:p-5 flex flex-col justify-between h-full min-w-0">
         <div className="flex justify-between items-start min-w-0 gap-2">
           <p className="text-caption font-medium text-muted-foreground truncate min-w-0 flex-1">
