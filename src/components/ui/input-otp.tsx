@@ -1,7 +1,7 @@
 /* Input OTP Component primitives - A component that displays an input OTP - from shadcn/ui (exposes InputOTP, InputOTPGroup, InputOTPSlot, InputOTPSeparator) */
 import * as React from 'react'
 import { OTPInput, OTPInputContext } from 'input-otp'
-import { Dot } from 'lucide-react'
+import { Dot } from './icons'
 
 import { cn } from '@/lib/utils'
 

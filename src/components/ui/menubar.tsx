@@ -1,7 +1,7 @@
 /* Menubar Component primitives - A component that displays a menubar (a menu that appears when you click on an element) - from shadcn/ui (exposes Menubar, MenubarMenu, MenubarGroup, MenubarPortal, MenubarSub, MenubarRadioGroup, MenubarTrigger, MenubarSubTrigger, MenubarSubContent, MenubarContent, MenubarItem, MenubarCheckboxItem, MenubarRadioItem, MenubarLabel, MenubarSeparator, MenubarShortcut) */
 import * as React from 'react'
 import * as MenubarPrimitive from '@radix-ui/react-menubar'
-import { Check, ChevronRight, Circle } from 'lucide-react'
+import { Check, ChevronRight, Circle } from './icons'
 
 import { cn } from '@/lib/utils'
 

@@ -1,6 +1,6 @@
 /* Calendar Component primitives - A component that displays a calendar - from shadcn/ui (exposes Calendar, CalendarProps) */
 import * as React from 'react'
-import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon } from 'lucide-react'
+import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon } from './icons'
 import { DayButton, DayPicker, getDefaultClassNames } from 'react-day-picker'
 
 import { cn } from '@/lib/utils'

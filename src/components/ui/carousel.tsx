@@ -1,7 +1,7 @@
 /* Carousel Component primitives - A component that displays a carousel - from shadcn/ui (exposes Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext) */
 import * as React from 'react'
 import useEmblaCarousel, { type UseEmblaCarouselType } from 'embla-carousel-react'
-import { ArrowLeft, ArrowRight } from 'lucide-react'
+import { ArrowLeft, ArrowRight } from './icons'
 
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'

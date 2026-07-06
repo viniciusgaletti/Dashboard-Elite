@@ -1,7 +1,7 @@
 /* Accordion Component primitives - A component that displays a list of items in an accordion - from shadcn/ui (exposes Accordion, AccordionItem, AccordionTrigger, AccordionContent) */
 import * as React from 'react'
 import * as AccordionPrimitive from '@radix-ui/react-accordion'
-import { ChevronDown } from 'lucide-react'
+import { ChevronDown } from './icons'
 
 import { cn } from '@/lib/utils'
 

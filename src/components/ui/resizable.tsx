@@ -1,5 +1,5 @@
 /* Resizable Component primitives - A component that displays a resizable panel - from shadcn/ui (exposes ResizablePanelGroup, ResizablePanel, ResizableHandle) */
-import { GripVertical } from 'lucide-react'
+import { GripVertical } from './icons'
 import * as ResizablePrimitive from 'react-resizable-panels'
 
 import { cn } from '@/lib/utils'

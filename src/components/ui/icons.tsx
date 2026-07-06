@@ -146,5 +146,29 @@ export const Sun = icon(
   '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
 )
 
-/* CalendarIcon — alias usado por date-pickers (mesma arte de Calendar). */
+/* ─── Glifos usados pelos primitivos shadcn/ui ──────────────── */
+export const Check = icon('<path d="M5 12l5 5L20 7"/>')
+export const ChevronRight = icon('<path d="M9 6l6 6-6 6"/>')
+export const ChevronLeft = icon('<path d="M15 18l-6-6 6-6"/>')
+export const ChevronUp = icon('<path d="M6 15l6-6 6 6"/>')
+export const ArrowLeft = icon('<path d="M19 12H5M12 19l-7-7 7-7"/>')
+export const ArrowRight = icon('<path d="M5 12h14M13 6l6 6-6 6"/>')
+export const Search = icon('<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>')
+export const PanelLeft = icon(
+  '<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/>',
+)
+export const Circle = icon('<circle cx="12" cy="12" r="10"/>')
+export const Dot = icon('<circle cx="12" cy="12" r="1" fill="currentColor"/>')
+export const MoreHorizontal = icon(
+  '<circle cx="5" cy="12" r="1" fill="currentColor"/><circle cx="12" cy="12" r="1" fill="currentColor"/><circle cx="19" cy="12" r="1" fill="currentColor"/>',
+)
+export const GripVertical = icon(
+  '<circle cx="9" cy="6" r="1" fill="currentColor"/><circle cx="9" cy="12" r="1" fill="currentColor"/><circle cx="9" cy="18" r="1" fill="currentColor"/><circle cx="15" cy="6" r="1" fill="currentColor"/><circle cx="15" cy="12" r="1" fill="currentColor"/><circle cx="15" cy="18" r="1" fill="currentColor"/>',
+)
+
+/* Aliases *Icon usados por alguns primitivos (ex.: calendar.tsx). */
 export const CalendarIcon = Calendar
+export const ChevronDownIcon = ChevronDown
+export const ChevronUpIcon = ChevronUp
+export const ChevronLeftIcon = ChevronLeft
+export const ChevronRightIcon = ChevronRight
