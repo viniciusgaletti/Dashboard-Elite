@@ -27,13 +27,13 @@ export default {
     extend: {
       fontFamily: {
         sans: [
-          '"SF Pro Display"',
+          '"Instrument Sans"',
           'system-ui',
           '-apple-system',
           'BlinkMacSystemFont',
           'sans-serif',
         ],
-        display: ['"SF Pro Display"', 'system-ui', '-apple-system', 'sans-serif'],
+        display: ['"Instrument Sans"', 'system-ui', '-apple-system', 'sans-serif'],
       },
       colors: {
         border: 'hsl(var(--border))',

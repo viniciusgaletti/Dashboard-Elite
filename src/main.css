@@ -1,124 +1,149 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ============================================================
+   Adapta Design System — light only (tema claro apenas)
+   Tokens convertidos de design.md (colors_and_type.css) para HSL,
+   consumidos por shadcn/ui + tailwind.config.ts.
+   ============================================================ */
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --background-secondary: 240 5% 96%;
-    --foreground: 0 0% 0%;
+    --background: 0 0% 100%; /* #FFFFFF surface/primary */
+    --background-secondary: 0 0% 96%; /* #F5F5F5 surface/secondary */
+    --foreground: 0 0% 4%; /* #0A0A0A text/primary */
 
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 0%;
+    --card: 0 0% 100%; /* #FFFFFF */
+    --card-foreground: 0 0% 4%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 0%;
+    --popover-foreground: 0 0% 4%;
 
-    --primary: 211 100% 50%; /* #007AFF Apple Blue */
+    --primary: 170 52% 40%; /* #319C8A brand/primary (turquoise) */
     --primary-foreground: 0 0% 100%;
 
-    --success: 135 59% 49%; /* #34C759 Apple Green */
+    --success: 142 72% 29%; /* Adapta success green (#15803D) */
     --success-foreground: 0 0% 100%;
 
-    --secondary: 240 5% 96%; /* #F2F2F7 Grouped Bg */
-    --secondary-foreground: 0 0% 0%;
+    --secondary: 0 0% 96%; /* #F5F5F5 grouped surface */
+    --secondary-foreground: 0 0% 4%;
 
-    --muted: 240 5% 96%;
-    --muted-foreground: 240 4% 46%; /* Secondary Label */
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%; /* #737373 text/secondary */
 
-    --accent: 211 100% 50%;
+    --accent: 170 52% 40%; /* brand */
     --accent-foreground: 0 0% 100%;
 
-    --destructive: 3 100% 59%; /* #FF3B30 */
+    --destructive: 0 72% 51%; /* #DC2626 */
     --destructive-foreground: 0 0% 100%;
 
-    --border: 240 5% 84%;
-    --input: 240 5% 84%;
-    --ring: 211 100% 50%;
+    --border: 0 0% 90%; /* #E5E5E5 border/subtle */
+    --input: 0 0% 90%;
+    --ring: 170 52% 40%; /* brand focus ring */
 
-    --radius: 14px; /* Apple HIG typical radius */
+    --radius: 12px; /* Adapta component radius (botões e cards padrão) */
 
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 0 0% 0%;
-    --sidebar-primary: 211 100% 50%;
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 0 0% 4%;
+    --sidebar-primary: 170 52% 40%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 5% 92%;
-    --sidebar-accent-foreground: 0 0% 0%;
-    --sidebar-border: 240 5% 84%;
-    --sidebar-ring: 211 100% 50%;
+    --sidebar-accent: 0 0% 96%;
+    --sidebar-accent-foreground: 0 0% 4%;
+    --sidebar-border: 0 0% 90%;
+    --sidebar-ring: 170 52% 40%;
 
-    --label-primary: 0 0% 0%;
-    --label-secondary: 240 4% 46%;
+    --label-primary: 0 0% 4%;
+    --label-secondary: 0 0% 45%;
+
+    /* Stylistic sets — apenas para display roles. Body permanece neutro. */
+    --display-ss:
+      'ss01' on, 'ss02' on, 'ss03' on, 'ss04' on, 'ss05' on, 'ss07' on, 'ss08' on, 'ss09' on,
+      'ss10' on;
   }
 
+  /* Light-only: .dark herda exatamente os mesmos tokens claros do Adapta,
+     para que qualquer resquício de `.dark` (ThemeProvider) não quebre o visual. */
   .dark {
-    --background: 0 0% 0%;
-    --background-secondary: 240 4% 11%; /* #1C1C1E */
-    --foreground: 0 0% 100%;
-
-    --card: 240 4% 11%;
-    --card-foreground: 0 0% 100%;
-
-    --popover: 240 4% 11%;
-    --popover-foreground: 0 0% 100%;
-
-    --primary: 210 100% 52%; /* #0A84FF Apple Blue Dark */
+    --background: 0 0% 100%;
+    --background-secondary: 0 0% 96%;
+    --foreground: 0 0% 4%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 4%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 4%;
+    --primary: 170 52% 40%;
     --primary-foreground: 0 0% 100%;
-
-    --success: 135 65% 51%; /* #30D158 Apple Green Dark */
+    --success: 142 72% 29%;
     --success-foreground: 0 0% 100%;
-
-    --secondary: 240 4% 11%;
-    --secondary-foreground: 0 0% 100%;
-
-    --muted: 240 4% 11%;
-    --muted-foreground: 240 5% 65%; /* Secondary Label Dark */
-
-    --accent: 210 100% 52%;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 4%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
+    --accent: 170 52% 40%;
     --accent-foreground: 0 0% 100%;
-
-    --destructive: 3 100% 61%; /* #FF453A */
+    --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
-
-    --border: 240 4% 20%;
-    --input: 240 4% 20%;
-    --ring: 210 100% 52%;
-
-    --sidebar-background: 240 4% 11%;
-    --sidebar-foreground: 0 0% 100%;
-    --sidebar-primary: 210 100% 52%;
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 170 52% 40%;
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 0 0% 4%;
+    --sidebar-primary: 170 52% 40%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 4% 20%;
-    --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 240 4% 20%;
-    --sidebar-ring: 210 100% 52%;
+    --sidebar-accent: 0 0% 96%;
+    --sidebar-accent-foreground: 0 0% 4%;
+    --sidebar-border: 0 0% 90%;
+    --sidebar-ring: 170 52% 40%;
+    --label-primary: 0 0% 4%;
+    --label-secondary: 0 0% 45%;
+  }
 
-    --label-primary: 0 0% 100%;
-    --label-secondary: 240 5% 65%;
+  body {
+    background: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family:
+      'Instrument Sans',
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      sans-serif;
+    font-feature-settings: normal; /* body neutro por padrão */
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
   }
 }
 
 @layer utilities {
+  /* Superfícies Adapta — flat + borda (a borda carrega a elevação).
+     Nada de blur/sombra aqui; sombra fica reservada para UI flutuante. */
   .glass-panel {
-    @apply bg-background/70 backdrop-blur-xl border border-white/20 dark:border-white/10 shadow-elevation;
+    @apply bg-card;
+    box-shadow: inset 0 0 0 1px hsl(var(--border));
   }
   .material-regular {
-    @apply bg-background/70 backdrop-blur-xl transition-all duration-300 ease-out;
+    @apply bg-background transition-all duration-300 ease-out;
   }
 
+  /* Display roles — ativam stylistic sets (personalidade da marca) */
   .text-large-title {
-    @apply text-[22px] md:text-[34px] font-bold leading-tight tracking-tight text-label-primary;
+    @apply text-[22px] md:text-[34px] font-bold leading-[1.1] tracking-[-0.02em] text-label-primary;
+    font-feature-settings: var(--display-ss);
   }
   .text-headline {
     @apply text-[17px] font-semibold leading-snug tracking-tight text-label-primary;
+    font-feature-settings: var(--display-ss);
   }
+
+  /* Body roles — leitura neutra, nunca ativam stylistic sets */
   .text-body {
     @apply text-[15px] md:text-[17px] font-normal leading-normal tracking-tight text-label-primary;
+    font-feature-settings: normal;
   }
   .text-caption {
     @apply text-[12px] font-normal leading-none text-label-secondary;
+    font-feature-settings: normal;
   }
 
   /* Scrollbar none */
@@ -149,5 +174,44 @@
   }
   .animate-fade-in-up {
     animation: fade-in-up 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+}
+
+/* ============================================================
+   SQUIRCLE — corner smoothing Apple-style (CSS Backgrounds L4).
+   Chromium 139+. Engines sem suporte degradam para border-radius
+   normal automaticamente. Pills/círculos (rounded-full) excluídos.
+   Quando ativo, os valores de radius são dobrados (força total).
+   ============================================================ */
+@supports (corner-shape: squircle) {
+  [class~='rounded'],
+  [class~='rounded-sm'],
+  [class~='rounded-md'],
+  [class~='rounded-lg'],
+  [class~='rounded-xl'],
+  [class~='rounded-2xl'],
+  [class~='rounded-3xl'] {
+    corner-shape: squircle;
+  }
+  [class~='rounded-sm'] {
+    border-radius: 4px !important;
+  }
+  [class~='rounded'] {
+    border-radius: 8px !important;
+  }
+  [class~='rounded-md'] {
+    border-radius: 12px !important;
+  }
+  [class~='rounded-lg'] {
+    border-radius: 16px !important;
+  }
+  [class~='rounded-xl'] {
+    border-radius: 24px !important;
+  }
+  [class~='rounded-2xl'] {
+    border-radius: 32px !important;
+  }
+  [class~='rounded-3xl'] {
+    border-radius: 48px !important;
   }
 }
