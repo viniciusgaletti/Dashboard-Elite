@@ -9,7 +9,7 @@ import {
 import { format, parseISO } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { Skeleton } from '@/components/ui/skeleton'
-import { ShoppingBag, Trash2 } from 'lucide-react'
+import { ShoppingBag, Trash2 } from '@/components/ui/icons'
 import { Sale } from '@/types/goals'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'

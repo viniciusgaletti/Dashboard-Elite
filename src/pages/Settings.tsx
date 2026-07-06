@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
-import { LogOut, Moon, Sun, Monitor, Camera, Users, Plus, Trash2 } from 'lucide-react'
+import { LogOut, Moon, Sun, Monitor, Camera, Users, Plus, Trash2 } from '@/components/ui/icons'
 import { useTheme } from 'next-themes'
 
 import { Card, CardContent } from '@/components/ui/card'

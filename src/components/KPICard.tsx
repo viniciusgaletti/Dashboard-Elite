@@ -1,5 +1,5 @@
 import { Card, CardContent } from '@/components/ui/card'
-import { LucideIcon, ArrowUp, ArrowDown } from 'lucide-react'
+import { LucideIcon, ArrowUp, ArrowDown } from '@/components/ui/icons'
 import { ReactNode } from 'react'
 import { cn } from '@/lib/utils'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'

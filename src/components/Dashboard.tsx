@@ -11,7 +11,7 @@ import {
   Video,
   Award,
   Activity,
-} from 'lucide-react'
+} from '@/components/ui/icons'
 
 import { Skeleton } from '@/components/ui/skeleton'
 import { KPICard } from '@/components/KPICard'

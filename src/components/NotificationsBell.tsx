@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { Bell } from 'lucide-react'
+import { Bell } from '@/components/ui/icons'
 import { Button } from '@/components/ui/button'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import type { PerformanceAlert } from '@/hooks/use-performance-notifications'

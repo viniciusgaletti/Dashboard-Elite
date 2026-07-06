@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { toast } from 'sonner'
-import { BarChart3, TrendingUp, Users, DollarSign, Lock } from 'lucide-react'
+import { BarChart3, TrendingUp, Users, DollarSign, Lock } from '@/components/ui/icons'
 
 const translateError = (message: string) => {
   const msg = message.toLowerCase()

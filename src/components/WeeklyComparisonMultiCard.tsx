@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart'
 import { StreamData } from '@/types/stream'
 import { formatCurrency, formatPercent, formatNumber } from '@/lib/data-utils'
-import { Calendar, TrendingUp, TrendingDown } from 'lucide-react'
+import { Calendar, TrendingUp, TrendingDown } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 
 const DAYS_MAP: Record<string, string> = {

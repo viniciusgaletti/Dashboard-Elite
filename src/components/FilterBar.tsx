@@ -9,7 +9,7 @@ import {
   endOfDay,
 } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
-import { CalendarIcon, SlidersHorizontal, ChevronDown, X } from 'lucide-react'
+import { CalendarIcon, SlidersHorizontal, ChevronDown, X } from '@/components/ui/icons'
 
 import { FilterState } from '@/types/stream'
 import { Label } from '@/components/ui/label'

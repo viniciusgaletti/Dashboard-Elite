@@ -1,4 +1,4 @@
-import { DollarSign, Settings } from 'lucide-react'
+import { DollarSign, Settings } from '@/components/ui/icons'
 import { DASHBOARDS } from '@/config/dashboards'
 
 export const NAV_LINKS = [

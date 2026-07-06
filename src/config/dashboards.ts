@@ -1,4 +1,4 @@
-import { GraduationCap, Megaphone } from 'lucide-react'
+import { GraduationCap, Megaphone } from '@/components/ui/icons'
 
 export const DASHBOARDS = {
   onboarding: {

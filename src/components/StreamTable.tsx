@@ -17,7 +17,7 @@ import {
   PaginationPrevious,
 } from '@/components/ui/pagination'
 import { StreamData } from '@/types/stream'
-import { ArrowDown, ArrowUp, ArrowUpDown } from 'lucide-react'
+import { ArrowDown, ArrowUp, ArrowUpDown } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 
 type SortConfig = {
