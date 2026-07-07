@@ -6,6 +6,7 @@ import { useAuth } from '@/hooks/use-auth'
 import { LogOut, ChevronsLeft, ChevronsRight } from '@/components/ui/icons'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
+import { AdaptaLogo } from '@/components/ui/adapta-logo'
 import { useSidebar } from '@/hooks/use-sidebar'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { supabase } from '@/lib/supabase/client'
@@ -63,23 +64,15 @@ export function Sidebar({ className }: { className?: string }) {
           {/* Logo */}
           <div
             className={cn(
-              'flex items-center gap-2 mb-8 transition-all duration-300',
+              'flex items-center mb-8 transition-all duration-300',
               isCollapsed ? 'justify-center px-0' : 'px-2',
             )}
           >
-            <img
-              src="/adapta-logo.png"
-              alt="Adapta"
-              className="w-8 h-8 rounded-lg shrink-0 object-cover"
-            />
-            <span
-              className={cn(
-                'text-headline whitespace-nowrap transition-all duration-300 font-bold',
-                isCollapsed ? 'w-0 opacity-0 overflow-hidden' : 'w-auto opacity-100',
-              )}
-            >
-              Elite Insights
-            </span>
+            {isCollapsed ? (
+              <AdaptaLogo variant="mark" className="h-7 w-auto text-foreground shrink-0" />
+            ) : (
+              <AdaptaLogo variant="wordmark" className="h-6 w-auto text-foreground" />
+            )}
           </div>
 
           {/* Navigation */}

@@ -282,7 +282,7 @@ function drawFooter(doc: jsPDF) {
     doc.setFont('helvetica', 'normal')
     doc.setFontSize(7)
     color(doc, C.muted)
-    doc.text('Gerado por Elite Insights', MARGIN, PAGE_H - 6)
+    doc.text('Gerado por Adapta', MARGIN, PAGE_H - 6)
     doc.text(`Página ${i} de ${totalPages}`, PAGE_W - MARGIN, PAGE_H - 6, { align: 'right' })
   }
 }
@@ -411,7 +411,7 @@ export async function exportConsolidatedPDF(): Promise<void> {
 
   // Page 1 — Onboarding KPIs
   fillPage(doc)
-  drawHeader(doc, 'Relatório Geral — Elite Insights', emptyFilter)
+  drawHeader(doc, 'Relatório Geral — Adapta', emptyFilter)
   let y = 38
   y = drawSectionTitle(doc, 'LIVE DE ONBOARDING', y)
   y = drawKPIs(doc, onKPIs, y)

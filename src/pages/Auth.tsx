@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { toast } from 'sonner'
 import { BarChart3, TrendingUp, Users, DollarSign, Lock } from '@/components/ui/icons'
+import { AdaptaLogo } from '@/components/ui/adapta-logo'
 
 const translateError = (message: string) => {
   const msg = message.toLowerCase()
@@ -49,14 +50,9 @@ export default function Auth() {
       {/* Left — Login Form */}
       <div className="flex-1 flex flex-col justify-center items-center px-6 sm:px-12 lg:px-20 bg-background">
         <div className="w-full max-w-[420px] space-y-8">
-          {/* Logo + Brand */}
-          <div className="flex items-center gap-3">
-            <img
-              src="/adapta-logo.png"
-              alt="Elite Insights"
-              className="w-10 h-10 rounded-xl object-cover"
-            />
-            <span className="text-xl font-bold tracking-tight">Elite Insights</span>
+          {/* Logo */}
+          <div className="flex items-center">
+            <AdaptaLogo variant="wordmark" className="h-8 w-auto text-foreground" />
           </div>
 
           {/* Heading */}
